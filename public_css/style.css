@@ -12,7 +12,7 @@
 }
 
 /* ==========================
-   BASE
+   RESET
 ========================== */
 
 * {
@@ -21,6 +21,10 @@
     box-sizing: border-box;
 }
 
+/* ==========================
+   BODY
+========================== */
+
 body {
     font-family: 'Poppins', sans-serif;
 
@@ -28,11 +32,9 @@ body {
         radial-gradient(circle at top left,
             rgba(193,18,31,.15),
             transparent 35%),
-
         radial-gradient(circle at bottom right,
             rgba(139,30,45,.15),
             transparent 35%),
-
         var(--bg);
 
     color: var(--white);
@@ -53,9 +55,6 @@ body {
     backdrop-filter: blur(20px);
 
     border-bottom: 1px solid rgba(193,18,31,.15);
-
-    box-shadow:
-        0 5px 20px rgba(0,0,0,.3);
 }
 
 .navbar-container {
@@ -79,7 +78,6 @@ body {
     font-weight: 700;
 
     color: white;
-    letter-spacing: 2px;
 }
 
 .navbar-logo img {
@@ -97,8 +95,8 @@ body {
 }
 
 .navbar-links li a {
-    text-decoration: none;
     color: white;
+    text-decoration: none;
 
     padding: 10px 18px;
 
@@ -109,7 +107,30 @@ body {
 
 .navbar-links li a:hover {
     background: rgba(193,18,31,.15);
-    transform: translateY(-2px);
+}
+
+/* ==========================
+   FORM CARD
+========================== */
+
+.container {
+
+    max-width: 480px;
+
+    margin: 80px auto;
+
+    padding: 40px;
+
+    background: rgba(21,21,28,.95);
+
+    border: 1px solid rgba(193,18,31,.15);
+
+    border-radius: 24px;
+
+    backdrop-filter: blur(20px);
+
+    box-shadow:
+        0 15px 40px rgba(0,0,0,.4);
 }
 
 /* ==========================
@@ -117,31 +138,30 @@ body {
 ========================== */
 
 h1 {
+
     text-align: center;
+
+    margin-bottom: 30px;
 
     font-family: 'Cinzel', serif;
 
-    margin-top: 50px;
-    margin-bottom: 15px;
-
-    font-size: 3rem;
-
     color: white;
 
-    letter-spacing: 3px;
+    font-size: 2.2rem;
 }
 
 h1::after {
+
     content: "";
 
     display: block;
 
-    width: 120px;
+    width: 80px;
     height: 4px;
 
-    margin: 15px auto;
+    margin: 15px auto 0;
 
-    border-radius: 50px;
+    border-radius: 20px;
 
     background:
         linear-gradient(
@@ -152,127 +172,124 @@ h1::after {
 }
 
 /* ==========================
-   MOSAÏQUE
+   LABELS
 ========================== */
 
-.mosaic-container {
-
-    max-width: 1400px;
-
-    margin: 50px auto;
-
-    padding: 20px;
-
-    display: grid;
-
-    grid-template-columns:
-        repeat(auto-fill, minmax(280px, 1fr));
-
-    gap: 30px;
-}
-
-/* ==========================
-   CARTE
-========================== */
-
-.mosaic-item {
-
-    background: rgba(21,21,28,.95);
-
-    border: 1px solid rgba(193,18,31,.15);
-
-    border-radius: 24px;
-
-    overflow: hidden;
-
-    backdrop-filter: blur(20px);
-
-    box-shadow:
-        0 15px 40px rgba(0,0,0,.4);
-
-    transition: .35s ease;
-}
-
-.mosaic-item:hover {
-
-    transform:
-        translateY(-10px)
-        scale(1.02);
-
-    border-color:
-        rgba(193,18,31,.35);
-
-    box-shadow:
-        0 20px 50px rgba(0,0,0,.55);
-}
-
-/* ==========================
-   IMAGE
-========================== */
-
-.mosaic-item img {
-
-    width: 100%;
-    height: 360px;
-
-    object-fit: cover;
-
-    transition: .5s ease;
-}
-
-.mosaic-item:hover img {
-    transform: scale(1.05);
-}
-
-/* ==========================
-   TITRE CARTE
-========================== */
-
-.mosaic-item h3 {
-
-    font-family: 'Cinzel', serif;
-
-    color: white;
-
-    font-size: 1.3rem;
-
-    margin: 20px 20px 10px;
-}
-
-/* ==========================
-   DESCRIPTION
-========================== */
-
-.mosaic-item p {
-
-    color: var(--gray);
-
-    line-height: 1.7;
-
-    margin: 0 20px 20px;
-}
-
-/* ==========================
-   BOUTON
-========================== */
-
-.mosaic-item .btn {
+.container label {
 
     display: block;
 
-    margin: 20px;
+    margin-top: 15px;
+    margin-bottom: 8px;
 
-    padding: 12px;
+    color: var(--white);
+}
 
-    text-align: center;
+/* ==========================
+   INPUTS
+========================== */
 
+.container input[type="text"],
+.container input[type="email"],
+.container input[type="password"] {
+
+    width: 100%;
+
+    padding: 14px;
+
+    background: rgba(255,255,255,.03);
+
+    border: 1px solid rgba(255,255,255,.08);
+
+    border-radius: 12px;
+
+    color: white;
+
+    font-size: 1rem;
+}
+
+.container input:focus {
+
+    outline: none;
+
+    border-color: var(--primary);
+
+    box-shadow:
+        0 0 15px rgba(193,18,31,.25);
+}
+
+/* ==========================
+   PASSWORD ICON
+========================== */
+
+.password-container {
+    position: relative;
+}
+
+.toggle-password {
+
+    position: absolute;
+
+    right: 15px;
+    top: 50%;
+
+    transform: translateY(-50%);
+
+    color: var(--primary);
+
+    cursor: pointer;
+}
+
+/* ==========================
+   CHECKBOX
+========================== */
+
+.checkbox-label {
+
+    display: flex;
+    align-items: center;
+
+    gap: 10px;
+
+    margin-top: 18px;
+
+    color: var(--gray);
+}
+
+.checkbox-label input[type="checkbox"] {
+    accent-color: var(--primary);
+}
+
+.checkbox-label a {
+    color: var(--primary);
     text-decoration: none;
+}
+
+.checkbox-label a:hover {
+    text-decoration: underline;
+}
+
+/* ==========================
+   BUTTON
+========================== */
+
+.container button[type="submit"] {
+
+    width: 100%;
+
+    margin-top: 25px;
+
+    padding: 14px;
+
+    border: none;
+
+    border-radius: 12px;
 
     color: white;
 
     font-weight: 600;
 
-    border-radius: 12px;
+    cursor: pointer;
 
     background:
         linear-gradient(
@@ -284,7 +301,7 @@ h1::after {
     transition: .3s;
 }
 
-.mosaic-item .btn:hover {
+.container button[type="submit"]:hover {
 
     transform: translateY(-3px);
 
@@ -293,24 +310,37 @@ h1::after {
 }
 
 /* ==========================
-   FOOTER
+   ALERTES
 ========================== */
 
-footer {
+.error {
 
-    margin-top: 80px;
+    background: rgba(255,0,0,.1);
 
-    background: rgba(10,10,15,.92);
+    border: 1px solid rgba(255,0,0,.2);
 
-    backdrop-filter: blur(20px);
+    color: #ffb4b4;
 
-    border-top: 1px solid rgba(193,18,31,.15);
+    padding: 15px;
 
-    text-align: center;
+    border-radius: 12px;
 
-    padding: 25px;
+    margin-bottom: 20px;
+}
 
-    color: #888;
+.success {
+
+    background: rgba(0,255,100,.08);
+
+    border: 1px solid rgba(0,255,100,.2);
+
+    color: #9ef0b1;
+
+    padding: 15px;
+
+    border-radius: 12px;
+
+    margin-bottom: 20px;
 }
 
 /* ==========================
@@ -329,11 +359,12 @@ footer {
         justify-content: center;
     }
 
-    h1 {
-        font-size: 2rem;
+    .container {
+        margin: 40px 20px;
+        padding: 25px;
     }
 
-    .mosaic-item img {
-        height: 250px;
+    h1 {
+        font-size: 1.8rem;
     }
 }
