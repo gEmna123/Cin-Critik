@@ -1,0 +1,206 @@
+/* Body et conteneur */
+    body {
+        background-color: #121212;
+        color: #f5c518;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        margin: 0;
+        padding-bottom: 50px;
+    }
+
+    .container {
+        max-width: 900px;
+        margin: 50px auto;
+        padding: 25px 30px;
+        background: #2c2c2c;
+        border-radius: 8px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    }
+
+    h1, h2, h3 {
+        color: #ffc107;
+        margin-bottom: 1rem;
+    }
+
+    /* Formulaires */
+    form {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+        margin-top: 15px;
+        max-width: 600px;
+    }
+
+    form label {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        color: #f5f5f5;
+        font-weight: 600;
+        gap: 10px;
+    }
+
+    input[type="text"],
+    input[type="email"],
+    input[type="password"],
+    input[type="date"],
+    textarea,
+    select {
+        flex: 1;
+        max-width: 400px;
+        background-color: #333;
+        color: white;
+        border: 1.5px solid #444;
+        padding: 10px 12px;
+        border-radius: 5px;
+        font-size: 1rem;
+        transition: border-color 0.3s ease;
+    }
+
+    input[type="text"]:focus,
+    input[type="email"]:focus,
+    input[type="password"]:focus,
+    input[type="date"]:focus,
+    textarea:focus,
+    select:focus {
+        border-color: #ffc107;
+        outline: none;
+    }
+
+    textarea {
+        resize: vertical;
+        min-height: 90px;
+    }
+
+    input[type="submit"],
+    button,
+    .btn {
+        max-width: 220px;
+        background: #ffc107;
+        color: #1c1c1c;
+        font-weight: 700;
+        border: none;
+        padding: 12px 18px;
+        border-radius: 6px;
+        cursor: pointer;
+        transition: background 0.3s ease;
+        align-self: flex-start;
+    }
+
+    input[type="submit"]:hover,
+    button:hover,
+    .btn:hover {
+        background: #e0a800;
+    }
+
+    /* Boutons danger */
+    .btn-danger {
+        background-color: #e8491d;
+        color: white;
+    }
+
+    .btn-danger:hover {
+        background-color: #d03a1a;
+    }
+
+    /* Alertes */
+    .alert-success {
+        background: #28a745;
+        color: white;
+        font-weight: 700;
+        padding: 12px 15px;
+        border-radius: 5px;
+        margin-bottom: 20px;
+        max-width: 600px;
+    }
+
+    .alert-error {
+        background: #dc3545;
+        color: white;
+        font-weight: 700;
+        padding: 12px 15px;
+        border-radius: 5px;
+        margin-bottom: 20px;
+        max-width: 600px;
+    }
+
+    /* Tableau */
+    table {
+        border-collapse: collapse;
+        width: 100%;
+        max-width: 900px;
+        margin-bottom: 40px;
+    }
+
+    table, th, td {
+        border: 1.5px solid #444;
+    }
+
+    th, td {
+        padding: 10px 15px;
+        text-align: left;
+        color: #f5f5f5;
+    }
+
+    th {
+        background-color: #333;
+    }
+
+    tr:nth-child(even) {
+        background-color: #222;
+    }
+
+    tr:hover {
+        background-color: #444;
+    }
+
+/* Navbar */
+.navbar {
+    background-color: #1e1e1e;
+    padding: 1rem 2rem;
+    box-shadow: 0 2px 5px rgba(245, 197, 24, 0.1);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.navbar-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.navbar-logo {
+    display: flex;
+    align-items: center;
+    font-size: 1.8rem;
+    font-weight: bold;
+    color: #f5c518;
+}
+
+.navbar-logo img {
+    height: 50px;
+    width: auto;
+    margin-right: 10px;
+    object-fit: contain;
+}
+
+.navbar-links {
+    list-style: none;
+    display: flex;
+    gap: 2rem;
+}
+
+.navbar-links li a {
+    color: #f5c518;
+    text-decoration: none;
+    font-weight: 500;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    transition: background-color 0.3s ease;
+}
+
+.navbar-links li a:hover {
+    background-color: rgba(245, 197, 24, 0.1);
+}
