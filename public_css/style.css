@@ -1,0 +1,144 @@
+
+/* Corps de la page */
+body {
+    margin: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #121212;
+    color: #f5c518;
+}
+
+/* Titre principal */
+h1 {
+    text-align: center;
+    margin-top: 30px;
+    font-size: 2.5em;
+    color: #f5c518;
+}
+
+/* Container de la mosaïque */
+.mosaic-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+    padding: 40px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* Élément individuel */
+.mosaic-item {
+    background-color: #1e1e1e;
+    border-radius: 15px;
+    box-shadow: 0 8px 20px rgba(245, 197, 24, 0.1);
+    overflow: hidden;
+    transition: transform 0.2s ease-in-out;
+}
+
+.mosaic-item:hover {
+    transform: translateY(-8px);
+}
+
+/* Image */
+.mosaic-item img {
+    width: 100%;
+    height: 300px;
+    object-fit: cover;
+    border-bottom: 1px solid #333;
+}
+
+/* Titre */
+.mosaic-item h3 {
+    margin: 15px;
+    font-size: 1.2em;
+    color: #f5c518;
+}
+
+
+
+/* Description */
+.mosaic-item p {
+    margin: 0 15px 15px;
+    font-size: 0.95em;
+    color: #d3d3d3;
+}
+
+/* Bouton */
+.mosaic-item .btn {
+    display: block;
+    text-align: center;
+    margin: 15px;
+    padding: 10px;
+    background-color: #f5c518;
+    color: #121212;
+    text-decoration: none;
+    border-radius: 8px;
+    transition: background-color 0.3s ease;
+    font-weight: bold;
+}
+
+.mosaic-item .btn:hover {
+    background-color: #e0b412;
+}
+
+/* Navbar */
+.navbar {
+    background-color: #1e1e1e;
+    padding: 1rem 2rem;
+    box-shadow: 0 2px 5px rgba(245, 197, 24, 0.1);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.navbar-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.navbar-logo {
+    display: flex;
+    align-items: center;
+    font-size: 1.8rem;
+    font-weight: bold;
+    color: #f5c518;
+}
+
+.navbar-links {
+    list-style: none;
+    display: flex;
+    gap: 2rem;
+}
+
+.navbar-links li a {
+    color: #f5c518;
+    text-decoration: none;
+    font-weight: 500;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    transition: background-color 0.3s ease;
+}
+
+.navbar-links li a:hover {
+    background-color: rgba(245, 197, 24, 0.1);
+}
+.navbar-logo img {
+    height: 50px;  /* Ajuste la hauteur de l'image du logo */
+    width: auto;   /* Conserve les proportions de l'image */
+    margin-right: 10px; /* Espacement entre l'image et le texte du logo */
+    object-fit: contain; /* Assure que l'image est contenue dans la taille définie sans être déformée */
+}
+/* Footer */
+footer {
+    background-color: #1e1e1e;
+    color: #f5c518;
+    text-align: center;
+    padding: 20px 0;
+    font-size: 0.9em;
+    margin-top: 40px;
+    box-shadow: 0 -2px 10px rgba(245, 197, 24, 0.1);
+}
+
+
