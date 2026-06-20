@@ -36,6 +36,7 @@ body {
         var(--bg);
 
     color: var(--white);
+    min-height: 100vh;
 }
 
 /* ==========================
@@ -52,6 +53,9 @@ body {
     backdrop-filter: blur(20px);
 
     border-bottom: 1px solid rgba(193,18,31,.15);
+
+    box-shadow:
+        0 5px 20px rgba(0,0,0,.3);
 }
 
 .navbar-container {
@@ -75,6 +79,7 @@ body {
     font-weight: 700;
 
     color: white;
+    letter-spacing: 2px;
 }
 
 .navbar-logo img {
@@ -99,62 +104,34 @@ body {
 
     border-radius: 12px;
 
-    transition: .3s;
+    transition: .3s ease;
 }
 
 .navbar-links li a:hover {
     background: rgba(193,18,31,.15);
+    transform: translateY(-2px);
 }
 
 /* ==========================
-   BANNIÈRE AUTEUR
+   TITRE
 ========================== */
 
-.detail-header {
-    position: relative;
+h1 {
+    text-align: center;
 
-    height: 420px;
-
-    background-size: cover;
-    background-position: center;
-
-    display: flex;
-    justify-content: center;
-    align-items: flex-end;
-}
-
-.detail-header::before {
-    content: "";
-
-    position: absolute;
-    inset: 0;
-
-    background:
-        linear-gradient(
-            to top,
-            rgba(11,11,15,1),
-            rgba(11,11,15,.4),
-            transparent
-        );
-}
-
-.detail-header h1 {
-    position: relative;
-    z-index: 2;
-
-    margin-bottom: 40px;
+    margin-top: 50px;
+    margin-bottom: 15px;
 
     font-family: 'Cinzel', serif;
 
     font-size: 3rem;
-    letter-spacing: 3px;
 
     color: white;
 
-    text-align: center;
+    letter-spacing: 3px;
 }
 
-.detail-header h1::after {
+h1::after {
     content: "";
 
     display: block;
@@ -164,7 +141,7 @@ body {
 
     margin: 15px auto;
 
-    border-radius: 20px;
+    border-radius: 50px;
 
     background:
         linear-gradient(
@@ -175,20 +152,21 @@ body {
 }
 
 /* ==========================
-   CONTENU
+   CONTAINER
 ========================== */
 
-.detail-container {
-    max-width: 1100px;
+.container {
+    max-width: 1200px;
     margin: 50px auto;
-    padding: 0 20px;
+    padding: 20px;
 }
 
 /* ==========================
-   BIOGRAPHIE
+   EVENT CARD
 ========================== */
 
-.detail-content {
+.event-item {
+
     background: rgba(21,21,28,.95);
 
     border: 1px solid rgba(193,18,31,.15);
@@ -197,117 +175,110 @@ body {
 
     padding: 30px;
 
-    margin-bottom: 40px;
+    margin-bottom: 35px;
 
     backdrop-filter: blur(20px);
+
+    box-shadow:
+        0 15px 40px rgba(0,0,0,.4);
+
+    transition: .35s ease;
 }
 
-.detail-content p {
-    color: var(--gray);
+.event-item:hover {
 
-    line-height: 1.9;
+    transform: translateY(-8px);
 
-    font-size: 1.05rem;
+    border-color:
+        rgba(193,18,31,.35);
+
+    box-shadow:
+        0 20px 50px rgba(0,0,0,.55);
 }
 
 /* ==========================
-   TITRE OEUVRES
+   TITRE EVENT
 ========================== */
 
-.detail-works h2 {
+.event-item h2 {
 
     font-family: 'Cinzel', serif;
 
     font-size: 2rem;
 
-    margin-bottom: 25px;
-
     color: white;
-}
 
-.detail-works h2::after {
-
-    content: "";
-
-    display: block;
-
-    width: 80px;
-    height: 4px;
-
-    margin-top: 10px;
-
-    border-radius: 20px;
-
-    background:
-        linear-gradient(
-            to right,
-            var(--secondary),
-            var(--primary)
-        );
+    margin-bottom: 15px;
 }
 
 /* ==========================
-   LISTE OEUVRES
+   TEXTES
 ========================== */
 
-.detail-works ul {
+.event-item p {
+
+    color: var(--gray);
+
+    line-height: 1.8;
+
+    margin-bottom: 12px;
+}
+
+.event-item strong {
+    color: white;
+}
+
+.event-item h3 {
+
+    color: var(--primary);
+
+    margin-top: 25px;
+    margin-bottom: 15px;
+
+    font-size: 1.2rem;
+}
+
+/* ==========================
+   PARTICIPANTS
+========================== */
+
+.event-item ul {
     list-style: none;
     padding: 0;
 }
 
-.detail-works li {
+.event-item ul li {
 
-    background: rgba(21,21,28,.95);
+    background: rgba(255,255,255,.04);
 
-    border: 1px solid rgba(193,18,31,.15);
+    border-left: 4px solid var(--primary);
 
-    border-radius: 20px;
-
-    padding: 25px;
-
-    margin-bottom: 20px;
-
-    transition: .3s;
-}
-
-.detail-works li:hover {
-
-    transform: translateY(-5px);
-
-    border-color: rgba(193,18,31,.35);
-
-    box-shadow:
-        0 15px 40px rgba(0,0,0,.4);
-}
-
-.detail-works strong {
-
-    display: block;
+    padding: 12px 15px;
 
     margin-bottom: 10px;
 
-    color: white;
+    border-radius: 12px;
 
-    font-size: 1.2rem;
+    color: white;
 }
 
 /* ==========================
    BOUTON
 ========================== */
 
-.btn {
+.btn-participate {
 
     display: inline-block;
 
-    margin-top: 15px;
+    margin-top: 20px;
 
-    padding: 12px 20px;
+    padding: 12px 24px;
+
+    border-radius: 12px;
 
     text-decoration: none;
 
     color: white;
-
-    border-radius: 12px;
 
     font-weight: 600;
 
@@ -318,10 +289,10 @@ body {
             var(--primary)
         );
 
-    transition: .3s;
+    transition: .3s ease;
 }
 
-.btn:hover {
+.btn-participate:hover {
 
     transform: translateY(-3px);
 
@@ -366,16 +337,15 @@ footer {
         justify-content: center;
     }
 
-    .detail-header {
-        height: 280px;
-    }
-
-    .detail-header h1 {
+    h1 {
         font-size: 2rem;
     }
 
-    .btn {
-        width: 100%;
-        text-align: center;
+    .event-item {
+        padding: 20px;
+    }
+
+    .event-item h2 {
+        font-size: 1.5rem;
     }
 }
