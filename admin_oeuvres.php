@@ -1,67 +1,65 @@
 <?php
-
 session_start();
-require_once 'postgre.php'; // connexion $conn
+require_once __DIR__ . '/database.php';
 
-// Vérifier si l'utilisateur est admin
 if (!isset($_SESSION['idrole']) || $_SESSION['idrole'] != 1) {
     header('Location: login.php');
     exit();
 }
 
-// Ajouter une œuvre
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['ajouter_oeuvre'])) {
-    $titre = pg_escape_string($conn, $_POST['titre']);
-    $description = pg_escape_string($conn, $_POST['description']);
+    $titre = trim($_POST['titre'] ?? '');
+    $description = trim($_POST['description'] ?? '');
+
     try {
-        $query = "INSERT INTO Oeuvre (titreOeuvre, descriptionOeuvre) VALUES ('$titre', '$description')";
-        pg_query($conn, $query);
-        $_SESSION['message'] = [
-            'type' => 'success',
-            'text' => 'Œuvre ajoutée avec succès.'
-        ];
-    } catch (Exception $e) {
-        $_SESSION['message'] = [
-            'type' => 'error',
-            'text' => 'Erreur lors de l\'ajout de l\'œuvre : ' . $e->getMessage()
-        ];
+        $query = "INSERT INTO Oeuvre (titreOeuvre, descriptionOeuvre) VALUES (:titre, :description)";
+        $stmt = $pdo->prepare($query);
+        $stmt->execute([':titre' => $titre, ':description' => $description]);
+        $_SESSION['message'] = ['type' => 'success', 'text' => 'Œuvre ajoutée avec succès.'];
+    } catch (PDOException $e) {
+        $_SESSION['message'] = ['type' => 'error', 'text' => 'Erreur lors de l'ajout de l'œuvre : ' . $e->getMessage()];
     }
     header('Location: admin_oeuvres.php');
     exit();
 }
 
-// Modifier une œuvre
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['modifier_oeuvre'])) {
-    $idOeuvre = (int)$_POST['idOeuvre'];
-    $titre = pg_escape_string($conn, $_POST['titre']);
-    $description = pg_escape_string($conn, $_POST['description']);
-    $query = "UPDATE Oeuvre SET titreOeuvre = '$titre', descriptionOeuvre = '$description' WHERE idOeuvre = $idOeuvre";
-    pg_query($conn, $query);
-    $_SESSION['message'] = [
-        'type' => 'success',
-        'text' => 'Œuvre modifiée avec succès.'
-    ];
+    $idOeuvre = (int)($_POST['idOeuvre'] ?? 0);
+    $titre = trim($_POST['titre'] ?? '');
+    $description = trim($_POST['description'] ?? '');
+
+    try {
+        $query = "UPDATE Oeuvre SET titreOeuvre = :titre, descriptionOeuvre = :description WHERE idOeuvre = :idOeuvre";
+        $stmt = $pdo->prepare($query);
+        $stmt->execute([':titre' => $titre, ':description' => $description, ':idOeuvre' => $idOeuvre]);
+        $_SESSION['message'] = ['type' => 'success', 'text' => 'Œuvre modifiée avec succès.'];
+    } catch (PDOException $e) {
+        $_SESSION['message'] = ['type' => 'error', 'text' => 'Erreur lors de la modification de l'œuvre : ' . $e->getMessage()];
+    }
     header('Location: admin_oeuvres.php');
     exit();
 }
 
-// Supprimer une œuvre
 if (isset($_GET['supprimer'])) {
     $id = (int)$_GET['supprimer'];
-    $query = "DELETE FROM Oeuvre WHERE idOeuvre = $id";
-    pg_query($conn, $query);
-    $_SESSION['message'] = [
-        'type' => 'success',
-        'text' => 'Œuvre supprimée avec succès.'
-    ];
+    try {
+        $stmt = $pdo->prepare("DELETE FROM Oeuvre WHERE idOeuvre = :id");
+        $stmt->execute([':id' => $id]);
+        $_SESSION['message'] = ['type' => 'success', 'text' => 'Œuvre supprimée avec succès.'];
+    } catch (PDOException $e) {
+        $_SESSION['message'] = ['type' => 'error', 'text' => 'Erreur lors de la suppression de l'œuvre : ' . $e->getMessage()];
+    }
     header('Location: admin_oeuvres.php');
     exit();
 }
 
-// Récupérer la liste des œuvres
-$oeuvres_query = "SELECT * FROM Oeuvre ORDER BY idOeuvre";
-$oeuvres_result = pg_query($conn, $oeuvres_query);
-$oeuvres = pg_fetch_all($oeuvres_result);
+try {
+    $stmt = $pdo->query("SELECT * FROM Oeuvre ORDER BY idOeuvre");
+    $oeuvres = $stmt->fetchAll() ?: [];
+} catch (PDOException $e) {
+    $oeuvres = [];
+    $_SESSION['message'] = ['type' => 'error', 'text' => 'Erreur lors de la récupération des œuvres : ' . $e->getMessage()];
+}
 ?>
 
 <!DOCTYPE html>
@@ -107,20 +105,14 @@ $oeuvres = pg_fetch_all($oeuvres_result);
                     <tr>
                         <form method="POST" action="admin_oeuvres.php">
                             <td><?= $oeuvre['idoeuvre'] ?></td>
-                            <td>
-                                <input type="text" name="titre" value="<?= htmlspecialchars($oeuvre['titreoeuvre']) ?>" required>
-                            </td>
-                            <td>
-                                <textarea name="description" rows="3" required><?= htmlspecialchars($oeuvre['descriptionoeuvre']) ?></textarea>
-                            </td>
+                            <td><input type="text" name="titre" value="<?= htmlspecialchars($oeuvre['titreoeuvre']) ?>" required></td>
+                            <td><textarea name="description" rows="3" required><?= htmlspecialchars($oeuvre['descriptionoeuvre']) ?></textarea></td>
                             <td>
                                 <input type="hidden" name="idOeuvre" value="<?= $oeuvre['idoeuvre'] ?>">
                                 <button type="submit" name="modifier_oeuvre">Modifier</button>
                             </td>
                         </form>
-                        <td>
-                            <a href="?supprimer=<?= $oeuvre['idoeuvre'] ?>" onclick="return confirm('Supprimer cette œuvre ?')">🗑️</a>
-                        </td>
+                        <td><a href="?supprimer=<?= $oeuvre['idoeuvre'] ?>" onclick="return confirm('Supprimer cette œuvre ?')">🗑️</a></td>
                     </tr>
                 <?php endforeach; ?>
             <?php else: ?>

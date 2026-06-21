@@ -1,67 +1,65 @@
 <?php
-
 session_start();
-require_once 'postgre.php'; // connexion $conn
+require_once __DIR__ . '/database.php';
 
-// Vérifier si l'utilisateur est admin
 if (!isset($_SESSION['idrole']) || $_SESSION['idrole'] != 1) {
     header('Location: login.php');
     exit();
 }
 
-// Ajouter un auteur
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['ajouter_auteur'])) {
-    $nom = pg_escape_string($conn, $_POST['nom']);
-    $prenom = pg_escape_string($conn, $_POST['prenom']);
+    $nom = trim($_POST['nom'] ?? '');
+    $prenom = trim($_POST['prenom'] ?? '');
+
     try {
-        $query = "INSERT INTO Auteur (nomAuteur, prenomAuteur) VALUES ('$nom', '$prenom')";
-        pg_query($conn, $query);
-        $_SESSION['message'] = [
-            'type' => 'success',
-            'text' => 'Auteur ajouté avec succès.'
-        ];
-    } catch (Exception $e) {
-        $_SESSION['message'] = [
-            'type' => 'error',
-            'text' => 'Erreur lors de l\'ajout de l\'auteur : ' . $e->getMessage()
-        ];
+        $query = "INSERT INTO Auteur (nomAuteur, prenomAuteur) VALUES (:nom, :prenom)";
+        $stmt = $pdo->prepare($query);
+        $stmt->execute([':nom' => $nom, ':prenom' => $prenom]);
+        $_SESSION['message'] = ['type' => 'success', 'text' => 'Auteur ajouté avec succès.'];
+    } catch (PDOException $e) {
+        $_SESSION['message'] = ['type' => 'error', 'text' => "Erreur lors de l'ajout de l'auteur : " . $e->getMessage()];
     }
     header('Location: admin_auteurs.php');
     exit();
 }
 
-// Modifier un auteur
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['modifier_auteur'])) {
-    $idAuteur = (int)$_POST['idAuteur'];
-    $nom = pg_escape_string($conn, $_POST['nom']);
-    $prenom = pg_escape_string($conn, $_POST['prenom']);
-    $query = "UPDATE Auteur SET nomAuteur = '$nom', prenomAuteur = '$prenom' WHERE idAuteur = $idAuteur";
-    pg_query($conn, $query);
-    $_SESSION['message'] = [
-        'type' => 'success',
-        'text' => 'Auteur modifié avec succès.'
-    ];
+    $idAuteur = (int)($_POST['idAuteur'] ?? 0);
+    $nom = trim($_POST['nom'] ?? '');
+    $prenom = trim($_POST['prenom'] ?? '');
+
+    try {
+        $query = "UPDATE Auteur SET nomAuteur = :nom, prenomAuteur = :prenom WHERE idAuteur = :idAuteur";
+        $stmt = $pdo->prepare($query);
+        $stmt->execute([':nom' => $nom, ':prenom' => $prenom, ':idAuteur' => $idAuteur]);
+        $_SESSION['message'] = ['type' => 'success', 'text' => 'Auteur modifié avec succès.'];
+    } catch (PDOException $e) {
+        $_SESSION['message'] = ['type' => 'error', 'text' => "Erreur lors de la modification de l'auteur : " . $e->getMessage()];
+    }
     header('Location: admin_auteurs.php');
     exit();
 }
 
-// Supprimer un auteur
 if (isset($_GET['supprimer'])) {
     $id = (int)$_GET['supprimer'];
-    $query = "DELETE FROM Auteur WHERE idAuteur = $id";
-    pg_query($conn, $query);
-    $_SESSION['message'] = [
-        'type' => 'success',
-        'text' => 'Auteur supprimé avec succès.'
-    ];
+    try {
+        $stmt = $pdo->prepare("DELETE FROM Auteur WHERE idAuteur = :id");
+        $stmt->execute([':id' => $id]);
+        $_SESSION['message'] = ['type' => 'success', 'text' => 'Auteur supprimé avec succès.'];
+    } catch (PDOException $e) {
+        $_SESSION['message'] = ['type' => 'error', 'text' => "Erreur lors de la suppression de l'auteur : " . $e->getMessage()];
+    }
     header('Location: admin_auteurs.php');
     exit();
 }
 
-// Récupérer la liste des auteurs
-$auteurs_query = "SELECT * FROM Auteur ORDER BY idAuteur";
-$auteurs_result = pg_query($conn, $auteurs_query);
-$auteurs = pg_fetch_all($auteurs_result);
+try {
+    $stmt = $pdo->query("SELECT * FROM Auteur ORDER BY idAuteur");
+    $auteurs = $stmt->fetchAll() ?: [];
+} catch (PDOException $e) {
+    $auteurs = [];
+    $_SESSION['message'] = ['type' => 'error', 'text' => 'Erreur lors de la récupération des auteurs : ' . $e->getMessage()];
+}
 ?>
 
 <!DOCTYPE html>
@@ -107,20 +105,14 @@ $auteurs = pg_fetch_all($auteurs_result);
                     <tr>
                         <form method="POST" action="admin_auteurs.php">
                             <td><?= $auteur['idauteur'] ?></td>
-                            <td>
-                                <input type="text" name="nom" value="<?= htmlspecialchars($auteur['nomauteur']) ?>" required>
-                            </td>
-                            <td>
-                                <input type="text" name="prenom" value="<?= htmlspecialchars($auteur['prenomauteur']) ?>" required>
-                            </td>
+                            <td><input type="text" name="nom" value="<?= htmlspecialchars($auteur['nomauteur']) ?>" required></td>
+                            <td><input type="text" name="prenom" value="<?= htmlspecialchars($auteur['prenomauteur']) ?>" required></td>
                             <td>
                                 <input type="hidden" name="idAuteur" value="<?= $auteur['idauteur'] ?>">
                                 <button type="submit" name="modifier_auteur">Modifier</button>
                             </td>
                         </form>
-                        <td>
-                            <a href="?supprimer=<?= $auteur['idauteur'] ?>" onclick="return confirm('Supprimer cet auteur ?')">🗑️</a>
-                        </td>
+                        <td><a href="?supprimer=<?= $auteur['idauteur'] ?>" onclick="return confirm('Supprimer cet auteur ?')">🗑️</a></td>
                     </tr>
                 <?php endforeach; ?>
             <?php else: ?>

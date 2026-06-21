@@ -1,98 +1,96 @@
 <?php
 session_start();
-require_once 'postgre.php'; // Contient la connexion $conn via pg_connect
+require_once __DIR__ . '/database.php';
 
-// Vérifier si l'utilisateur est admin
 if (!isset($_SESSION['idrole']) || $_SESSION['idrole'] != 1) {
     header('Location: login.php');
     exit();
 }
 
-// Ajouter un utilisateur
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['ajouter'])) {
-    $nom = pg_escape_string($conn, $_POST['nom']);
-    $prenom = pg_escape_string($conn, $_POST['prenom']);
-    $email = pg_escape_string($conn, $_POST['email']);
-    $mdp = password_hash($_POST['mdp'], PASSWORD_DEFAULT);
-    $role = (int)$_POST['role'];
+    $nom = trim($_POST['nom'] ?? '');
+    $prenom = trim($_POST['prenom'] ?? '');
+    $email = trim($_POST['email'] ?? '');
+    $mdp = password_hash($_POST['mdp'] ?? '', PASSWORD_DEFAULT);
+    $role = (int)($_POST['role'] ?? 0);
 
-    $query = "INSERT INTO Utilisateur (nomUtilisateur, prenomUtilisateur, emailUtilisateur, mdpUtilisateur, idRole)
-              VALUES ('$nom', '$prenom', '$email', '$mdp', $role)";
-    pg_query($conn, $query);
+    try {
+        $stmt = $pdo->prepare("INSERT INTO Utilisateur (nomUtilisateur, prenomUtilisateur, emailUtilisateur, mdpUtilisateur, idRole) VALUES (:nom, :prenom, :email, :mdp, :role)");
+        $stmt->execute([':nom' => $nom, ':prenom' => $prenom, ':email' => $email, ':mdp' => $mdp, ':role' => $role]);
+    } catch (PDOException $e) {
+        echo htmlspecialchars('Erreur lors de l'ajout de l'utilisateur : ' . $e->getMessage());
+    }
 }
 
-// Supprimer un utilisateur
 if (isset($_GET['supprimer'])) {
     $id = (int)$_GET['supprimer'];
-    $query = "DELETE FROM Utilisateur WHERE idUtilisateur = $id";
-    pg_query($conn, $query);
+    try {
+        $stmt = $pdo->prepare("DELETE FROM Utilisateur WHERE idUtilisateur = :id");
+        $stmt->execute([':id' => $id]);
+    } catch (PDOException $e) {
+        echo htmlspecialchars('Erreur lors de la suppression de l'utilisateur : ' . $e->getMessage());
+    }
 }
 
-// Modifier le rôle d'un utilisateur
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['changer_role'])) {
-    $idUser = (int)$_POST['idUtilisateur'];
-    $nouveauRole = (int)$_POST['nouveauRole'];
-    $query = "UPDATE Utilisateur SET idRole = $nouveauRole WHERE idUtilisateur = $idUser";
-    pg_query($conn, $query);
+    $idUser = (int)($_POST['idUtilisateur'] ?? 0);
+    $nouveauRole = (int)($_POST['nouveauRole'] ?? 0);
+    try {
+        $stmt = $pdo->prepare("UPDATE Utilisateur SET idRole = :role WHERE idUtilisateur = :id");
+        $stmt->execute([':role' => $nouveauRole, ':id' => $idUser]);
+    } catch (PDOException $e) {
+        echo htmlspecialchars('Erreur lors de la modification du rôle : ' . $e->getMessage());
+    }
 }
 
-// Récupérer les utilisateurs et les rôles
-$utilisateurs_query = "SELECT u.*, r.nomRole FROM Utilisateur u JOIN Role r ON u.idRole = r.idRole ORDER BY u.idUtilisateur";
-$utilisateurs_result = pg_query($conn, $utilisateurs_query);
-$utilisateurs = pg_fetch_all($utilisateurs_result);
+try {
+    $utilisateurs = $pdo->query("SELECT u.*, r.nomRole FROM Utilisateur u JOIN Role r ON u.idRole = r.idRole ORDER BY u.idUtilisateur")->fetchAll() ?: [];
+    $roles = $pdo->query("SELECT * FROM Role")->fetchAll() ?: [];
+    $oeuvres = $pdo->query("SELECT * FROM Oeuvre ORDER BY idOeuvre")->fetchAll() ?: [];
+    $critiques = $pdo->query("SELECT * FROM Critique ORDER BY idCritique")->fetchAll() ?: [];
+    $evenements = $pdo->query("SELECT * FROM Evenement ORDER BY dateEvenement")->fetchAll() ?: [];
+} catch (PDOException $e) {
+    $utilisateurs = $roles = $oeuvres = $critiques = $evenements = [];
+    echo htmlspecialchars('Erreur de récupération : ' . $e->getMessage());
+}
 
-$roles_query = "SELECT * FROM Role";
-$roles_result = pg_query($conn, $roles_query);
-$roles = pg_fetch_all($roles_result);
-
-// Ajouter une critique
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['ajouter_critique'])) {
-    $titre = pg_escape_string($conn, $_POST['titre']);
-    $contenu = pg_escape_string($conn, $_POST['contenu']);
-    $idUtilisateur = $_SESSION['idutilisateur'];
+    $titre = trim($_POST['titre'] ?? '');
+    $contenu = trim($_POST['contenu'] ?? '');
+    $idUtilisateur = $_SESSION['user_id'] ?? null;
 
-    $query = "INSERT INTO Critique (titre, contenu, idUtilisateur) VALUES ('$titre', '$contenu', $idUtilisateur)";
-    pg_query($conn, $query);
+    if ($idUtilisateur !== null) {
+        try {
+            $stmt = $pdo->prepare("INSERT INTO Critique (titre, contenu, idUtilisateur) VALUES (:titre, :contenu, :idUtilisateur)");
+            $stmt->execute([':titre' => $titre, ':contenu' => $contenu, ':idUtilisateur' => $idUtilisateur]);
+        } catch (PDOException $e) {
+            echo htmlspecialchars('Erreur lors de l'ajout de la critique : ' . $e->getMessage());
+        }
+    }
 }
 
-// Supprimer une critique
 if (isset($_GET['supprimer_critique'])) {
     $idCritique = (int)$_GET['supprimer_critique'];
-    $query = "DELETE FROM Critique WHERE idCritique = $idCritique";
-    pg_query($conn, $query);
+    try {
+        $stmt = $pdo->prepare("DELETE FROM Critique WHERE idCritique = :id");
+        $stmt->execute([':id' => $idCritique]);
+    } catch (PDOException $e) {
+        echo htmlspecialchars('Erreur lors de la suppression de la critique : ' . $e->getMessage());
+    }
 }
 
-// Ajouter un événement
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['ajouter_evenement'])) {
-    $nomEvenement = pg_escape_string($conn, $_POST['nom_evenement']);
-    $dateEvenement = pg_escape_string($conn, $_POST['date_evenement']);
-    $lieuEvenement = pg_escape_string($conn, $_POST['lieu_evenement']);
+    $nomEvenement = trim($_POST['nom_evenement'] ?? '');
+    $dateEvenement = trim($_POST['date_evenement'] ?? '');
+    $lieuEvenement = trim($_POST['lieu_evenement'] ?? '');
 
-    $query = "INSERT INTO Evenement (nomEvenement, dateEvenement, lieuEvenement) VALUES ('$nomEvenement', '$dateEvenement', '$lieuEvenement')";
-    pg_query($conn, $query);
+    try {
+        $stmt = $pdo->prepare("INSERT INTO Evenement (nomEvenement, dateEvenement, lieuEvenement) VALUES (:nom, :date, :lieu)");
+        $stmt->execute([':nom' => $nomEvenement, ':date' => $dateEvenement, ':lieu' => $lieuEvenement]);
+    } catch (PDOException $e) {
+        echo htmlspecialchars('Erreur lors de l'ajout de l'événement : ' . $e->getMessage());
+    }
 }
-
-// Supprimer un événement
-if (isset($_GET['supprimer_evenement'])) {
-    $idEvenement = (int)$_GET['supprimer_evenement'];
-    $query = "DELETE FROM Evenement WHERE idEvenement = $idEvenement";
-    pg_query($conn, $query);
-}
-
-// Récupérer les critiques
-$critiques_query = "SELECT * FROM Critique ORDER BY idCritique";
-$critiques_result = pg_query($conn, $critiques_query);
-$critiques = pg_fetch_all($critiques_result);
-
-// Récupérer les événements
-$evenements_query = "SELECT * FROM Evenement ORDER BY dateEvenement";
-$evenements_result = pg_query($conn, $evenements_query);
-$evenements = pg_fetch_all($evenements_result);
-
-// Récupérer les œuvres culturelles
-$oeuvres_query = "SELECT * FROM Oeuvre ORDER BY idOeuvre";
-$oeuvres_result = pg_query($conn, $oeuvres_query);
-$oeuvres = pg_fetch_all($oeuvres_result);
 ?>
 
 <!DOCTYPE html>
@@ -106,19 +104,15 @@ $oeuvres = pg_fetch_all($oeuvres_result);
     <?php include 'includes/navbar.php'; ?>
 
     <div class="container">
-    	<h1>Espace Administration</h1>
-    	<p>Bienvenue dans l’espace d'administration. Ici, vous pouvez gérer le contenu du site.</p>
+        <h1>Espace Administration</h1>
+        <p>Bienvenue dans l’espace d'administration. Ici, vous pouvez gérer le contenu du site.</p>
 
-    	<ul>
-        	<li><a href="admin.php">Gérer les utilisateurs, critiques, événements</a></li>
-        	<li><a href="admin_oeuvres.php">Gérer les œuvres</a></li>
-        	<li><a href="admin_auteurs.php">Gérer les auteurs</a></li>
-        	<!-- ajoute d'autres liens si nécessaire -->
-    	</ul>
+        <ul>
+            <li><a href="admin.php">Gérer les utilisateurs, critiques, événements</a></li>
+            <li><a href="admin_oeuvres.php">Gérer les œuvres</a></li>
+            <li><a href="admin_auteurs.php">Gérer les auteurs</a></li>
+        </ul>
     </div>
-
-    <h2>Administration des Utilisateurs</h2>
-
 
     <h2>Ajouter un utilisateur</h2>
     <form method="POST">
@@ -153,7 +147,7 @@ $oeuvres = pg_fetch_all($oeuvres_result);
                     <td><?= $user['idutilisateur'] ?></td>
                     <td><?= htmlspecialchars($user['prenomutilisateur']) . ' ' . htmlspecialchars($user['nomutilisateur']) ?></td>
                     <td><?= htmlspecialchars($user['emailutilisateur']) ?></td>
-                    <td><?= $user['dateinscription'] ?></td>
+                    <td><?= htmlspecialchars($user['dateinscription']) ?></td>
                     <td><?= htmlspecialchars($user['nomrole']) ?></td>
                     <td>
                         <form method="POST" style="display:inline;">
@@ -198,7 +192,7 @@ $oeuvres = pg_fetch_all($oeuvres_result);
                     <td><?= $critique['idcritique'] ?></td>
                     <td><?= htmlspecialchars($critique['titre']) ?></td>
                     <td><?= htmlspecialchars($critique['contenu']) ?></td>
-                    <td><?= $critique['idutilisateur'] ?></td>
+                    <td><?= htmlspecialchars($critique['idutilisateur']) ?></td>
                     <td><a href="?supprimer_critique=<?= $critique['idcritique'] ?>" onclick="return confirm('Supprimer cette critique ?')">🗑️</a></td>
                 </tr>
             <?php endforeach; ?>
@@ -211,7 +205,8 @@ $oeuvres = pg_fetch_all($oeuvres_result);
     <form method="POST">
         <label>Nom de l'événement: <input type="text" name="nom_evenement" required></label><br>
         <label>Date: <input type="date" name="date_evenement" required></label><br>
-        <label>Lieu: <input type="text" name="lieu_evenement" required></label><br>
+        <label>Lieu: <input type="text" name="description_evenement" required></label><br>
+        <label>Type: <input type="text" name="type_evenement"></label><br>
         <input type="submit" name="ajouter_evenement" value="Ajouter l'événement">
     </form>
 
@@ -229,8 +224,8 @@ $oeuvres = pg_fetch_all($oeuvres_result);
                 <tr>
                     <td><?= $evenement['idevenement'] ?></td>
                     <td><?= htmlspecialchars($evenement['nomevenement']) ?></td>
-                    <td><?= $evenement['dateevenement'] ?></td>
-                    <td><?= htmlspecialchars($evenement['lieuevenement']) ?></td>
+                    <td><?= htmlspecialchars($evenement['dateevenement']) ?></td>
+                    <td><?= htmlspecialchars($evenement['descriptionevenement']) ?></td>
                     <td><a href="?supprimer_evenement=<?= $evenement['idevenement'] ?>" onclick="return confirm('Supprimer cet événement ?')">🗑️</a></td>
                 </tr>
             <?php endforeach; ?>
@@ -238,27 +233,5 @@ $oeuvres = pg_fetch_all($oeuvres_result);
             <tr><td colspan="5">Aucun événement trouvé.</td></tr>
         <?php endif; ?>
     </table>
-
-    <h2>Liste des œuvres culturelles</h2>
-    <table border="1">
-        <tr>
-            <th>ID</th>
-            <th>Nom</th>
-            <th>Description</th>
-        </tr>
-        <?php if ($oeuvres): ?>
-            <?php foreach ($oeuvres as $oeuvre): ?>
-                <tr>
-                    <td><?= $oeuvre['idoeuvre'] ?></td>
-                    <td><?= htmlspecialchars($oeuvre['nomoeuvre']) ?></td>
-                    <td><?= htmlspecialchars($oeuvre['descriptionoeuvre']) ?></td>
-                </tr>
-            <?php endforeach; ?>
-        <?php else: ?>
-            <tr><td colspan="3">Aucune œuvre culturelle trouvée.</td></tr>
-        <?php endif; ?>
-    </table>
-
 </body>
 </html>
-
