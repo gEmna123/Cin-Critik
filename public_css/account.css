@@ -1,45 +1,190 @@
-/* account.css - Version optimisée */
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Poppins:wght@300;400;500;600&display=swap');
 
-/* Structure principale */
+:root {
+    --bg: #0b0b0f;
+    --card: #15151c;
+
+    --primary: #c1121f;
+    --secondary: #8b1e2d;
+
+    --white: #f8f9fa;
+    --gray: #b8b8b8;
+
+    --danger: #dc3545;
+}
+
+/* ==========================
+   BASE
+========================== */
+
+body {
+    margin: 0;
+    font-family: 'Poppins', sans-serif;
+
+    background:
+        radial-gradient(circle at top left,
+            rgba(193,18,31,.15),
+            transparent 35%),
+        radial-gradient(circle at bottom right,
+            rgba(139,30,45,.15),
+            transparent 35%),
+        var(--bg);
+
+    color: var(--white);
+}
+
+/* ==========================
+   NAVBAR
+========================== */
+
+.navbar {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+
+    background: rgba(10,10,15,.92);
+    backdrop-filter: blur(20px);
+
+    border-bottom: 1px solid rgba(193,18,31,.15);
+}
+
+.navbar-container {
+    max-width: 1300px;
+    margin: auto;
+
+    padding: 18px 40px;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.navbar-logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    font-family: 'Cinzel', serif;
+    font-size: 1.8rem;
+
+    color: white;
+}
+
+.navbar-logo img {
+    height: 55px;
+}
+
+.navbar-links {
+    display: flex;
+    gap: 15px;
+    list-style: none;
+}
+
+.navbar-links a {
+    color: white;
+    text-decoration: none;
+
+    padding: 10px 18px;
+
+    border-radius: 12px;
+
+    transition: .3s;
+}
+
+.navbar-links a:hover {
+    background: rgba(193,18,31,.15);
+}
+
+/* ==========================
+   PAGE
+========================== */
+
 .account-container {
-    max-width: 900px;
-    margin: 50px auto;
-    padding: 30px;
-    background: #2c2c2c;
-    border-radius: 8px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-    color: #f5f5f5;
+
+    max-width: 1000px;
+
+    margin: 60px auto;
+
+    padding: 40px;
+
+    background: rgba(21,21,28,.95);
+
+    border: 1px solid rgba(193,18,31,.15);
+
+    border-radius: 24px;
+
+    backdrop-filter: blur(20px);
+
+    box-shadow:
+        0 15px 40px rgba(0,0,0,.4);
 }
 
-.account-section {
-    margin-bottom: 30px;
-    padding: 20px;
-    background: #1e1e1e;
-    border-radius: 8px;
-    border-left: 4px solid #ffc107;
-}
+/* ==========================
+   TITRES
+========================== */
 
-.danger-zone {
-    border-left-color: #e8491d;
-    background: rgba(232, 73, 29, 0.1);
-}
-
-/* Titres */
 .account-container h1 {
-    color: #ffc107;
+
     text-align: center;
-    margin-bottom: 30px;
-    font-size: 2.2em;
+
+    font-family: 'Cinzel', serif;
+
+    font-size: 2.5rem;
+
+    color: white;
+
+    margin-bottom: 35px;
 }
 
 .account-container h2 {
-    color: #ffc107;
-    margin-top: 0;
-    font-size: 1.5em;
+
+    color: white;
+
+    margin-bottom: 20px;
+
+    font-size: 1.5rem;
 }
 
-/* Formulaires */
-.account-form, .delete-form {
+.account-container h3,
+.account-container h4 {
+    color: white;
+}
+
+/* ==========================
+   SECTIONS
+========================== */
+
+.account-section {
+
+    background: rgba(255,255,255,.02);
+
+    border: 1px solid rgba(255,255,255,.05);
+
+    border-radius: 20px;
+
+    padding: 25px;
+
+    margin-bottom: 25px;
+}
+
+/* ==========================
+   ZONE DANGER
+========================== */
+
+.danger-zone {
+
+    border: 1px solid rgba(220,53,69,.3);
+
+    background:
+        rgba(220,53,69,.08);
+}
+
+/* ==========================
+   FORMULAIRES
+========================== */
+
+.account-form,
+.delete-form {
     display: flex;
     flex-direction: column;
     gap: 15px;
@@ -51,397 +196,253 @@
 }
 
 .form-group label {
+
+    color: var(--white);
+
     margin-bottom: 8px;
-    color: #f5c518;
-    font-weight: 500;
 }
 
-.form-group input, 
-.form-group textarea {
-    padding: 12px;
-    background: #333;
-    border: 1px solid #444;
-    border-radius: 5px;
-    color: #fff;
+.form-group input,
+.form-group textarea,
+select {
+
+    padding: 14px;
+
+    border-radius: 12px;
+
+    background: rgba(255,255,255,.03);
+
+    border: 1px solid rgba(255,255,255,.08);
+
+    color: white;
 }
 
-.form-group input:focus {
-    border-color: #ffc107;
+.form-group input:focus,
+.form-group textarea:focus,
+select:focus {
+
     outline: none;
+
+    border-color: var(--primary);
+
+    box-shadow:
+        0 0 15px rgba(193,18,31,.25);
 }
 
-/* Boutons */
-.btn {
-    padding: 12px 20px;
-    border-radius: 5px;
-    font-weight: bold;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    border: none;
-}
+/* ==========================
+   BOUTONS
+========================== */
 
+.btn,
 .btn-primary {
-    background: #ffc107;
-    color: #1c1c1c;
+
+    background:
+        linear-gradient(
+            135deg,
+            var(--secondary),
+            var(--primary)
+        );
+
+    color: white;
+
+    border: none;
+
+    padding: 12px 20px;
+
+    border-radius: 12px;
+
+    cursor: pointer;
+
+    font-weight: 600;
+
+    transition: .3s;
 }
 
+.btn:hover,
 .btn-primary:hover {
-    background: #e0a800;
+
+    transform: translateY(-3px);
+
+    box-shadow:
+        0 10px 30px rgba(193,18,31,.35);
 }
 
 .btn-danger {
-    background: #e8491d;
-    color: white;
+
+    background:
+        linear-gradient(
+            135deg,
+            #9f1239,
+            #dc3545
+        );
 }
 
 .btn-danger:hover {
-    background: #d03a1a;
-}
 
-/* Liste des critiques */
-.critique-list {
-    list-style: none;
-    padding: 0;
-    margin: 20px 0;
-}
-
-.critique-item {
-    padding: 15px;
-    margin-bottom: 10px;
-    background: #333;
-    border-radius: 5px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.critique-id {
-    color: #ffc107;
-    font-weight: bold;
-}
-
-.critique-date {
-    color: #aaa;
-    font-size: 0.9em;
-}
-
-/* Lien admin */
-.admin-notice {
-    text-align: center;
-    margin-bottom: 30px;
-}
-
-.admin-button {
-    display: inline-block;
-    padding: 10px 20px;
-    background: rgba(245, 197, 24, 0.2);
-    color: #ffc107;
-    border-radius: 5px;
-    text-decoration: none;
-    font-weight: bold;
-    border: 1px solid #ffc107;
-    transition: all 0.3s ease;
-}
-
-.admin-button:hover {
-    background: rgba(245, 197, 24, 0.4);
-}
-
-/* Messages */
-.message {
-    padding: 15px;
-    margin-bottom: 20px;
-    border-radius: 5px;
-    text-align: center;
-}
-
-.alert {
-    background: rgba(232, 73, 29, 0.2);
-    border: 1px solid #e8491d;
-    color: #ff6b6b;
-}/* Base */
-
-/* Container formulaire */
-.container {
-    max-width: 400px;
-    margin: 80px auto;
-    padding: 30px;
-    background-color: #1e1e1e;
-    border-radius: 15px;
-    box-shadow: 0 8px 20px rgba(245, 197, 24, 0.1);
-}
-body {
-    margin: 0;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-color: #121212;
-    color: #f5c518;
-}
-
-
-/* Navbar */
-.navbar {
-    background-color: #1e1e1e;
-    padding: 1rem 2rem;
-    box-shadow: 0 2px 5px rgba(245, 197, 24, 0.1);
-    position: sticky;
-    top: 0;
-    z-index: 100;
-}
-
-.navbar-container {
-    max-width: 1200px;
-    margin: 0 auto;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.navbar-logo {
-    display: flex;
-    align-items: center;
-    font-size: 1.8rem;
-    font-weight: bold;
-    color: #f5c518;
-}
-
-.navbar-logo img {
-    height: 50px;
-    width: auto;
-    margin-right: 10px;
-    object-fit: contain;
-}
-
-.navbar-links {
-    list-style: none;
-    display: flex;
-    gap: 2rem;
-}
-
-.navbar-links li a {
-    color: #f5c518;
-    text-decoration: none;
-    font-weight: 500;
-    padding: 0.5rem 1rem;
-    border-radius: 8px;
-    transition: background-color 0.3s ease;
-}
-
-.navbar-links li a:hover {
-    background-color: rgba(245, 197, 24, 0.1);
-}
-/* Conteneur principal */
-.container {
-    max-width: 900px;
-    margin: 50px auto;
-    padding: 20px;
-    background: #2c2c2c;
-    border-radius: 8px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-}
-
-/* Titre principal */
-.container h1 {
-    text-align: center;
-    font-size: 2em;
-    margin-bottom: 20px;
-    color: #ffc107;
-    font-weight: bold;
-}
-
-/* Sous-titres */
-.container h2, .container h3 {
-    margin-top: 30px;
-    font-size: 1.5em;
-    color: #ffc107;
-}
-
-/* Formulaires */
-form {
-    margin-bottom: 20px;
-    display: flex;
-    flex-direction: column;
-}
-
-form label {
-    font-weight: bold;
-    margin-bottom: 5px;
-    color: #f5f5f5;
-    text-align: left;
-}
-
-form input[type="text"],
-form input[type="email"],
-form input[type="number"],
-form textarea {
-    padding: 10px;
-    margin-bottom: 15px;
-    border: 1px solid #444;
-    border-radius: 5px;
-    font-size: 1em;
-    background-color: #f5f5f5;
-    color: #333;
-}
-
-form input:focus,
-form textarea:focus {
-    border-color: #ffc107;
-    outline: none;
-}
-
-/* Boutons */
-form button {
-    background: #ffc107;
-    color: #1c1c1c;
-    border: none;
-    padding: 10px 15px;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 1em;
-    font-weight: bold;
-    transition: background 0.3s ease;
-    margin-top: 10px;
-}
-
-form button:hover {
-    background: #e0a800;
-}
-
-/* Confirmation de suppression */
-form button[onclick] {
-    background: #e8491d;
-}
-
-form button[onclick]:hover {
-    background: #a8321d;
-}
-
-/* Messages d'erreur ou de succès */
-.error, .success {
-    padding: 10px;
-    border-radius: 5px;
-    margin-bottom: 15px;
-    text-align: center;
-}
-
-.error {
-    color: #e8491d;
-    background: #ffe6e6;
-    border: 1px solid #e8491d;
-}
-
-.success {
-    color: #4CAF50;
-    background: #e6ffe6;
-    border: 1px solid #4CAF50;
-}
-
-/* Responsive */
-@media (max-width: 768px) {
-    .container {
-        width: 95%;
-    }
-
-    form input,
-    form textarea {
-        font-size: 0.9em;
-    }
-
-    form button {
-        font-size: 0.9em;
-    }
-}
-.mdp-oublie {
-    text-align: right;
-    margin-bottom: 10px;
-}
-
-.mdp-oublie a {
-    color: #f5c518;
-    text-decoration: none;
-    font-size: 0.95em;
-   transition: color 0.3s ease;
-}
-
-.mdp-oublie a:hover {
-    color: #ffc107;
-    text-decoration: underline;
-}
-
-
-/* Nouveaux styles pour la gestion admin */
-.admin-tools {
-    margin-top: 40px;
-    border-top: 2px solid #ffc107;
-    padding-top: 20px;
-}
-
-.admin-section {
-    background: #2a2a2a;
-    padding: 20px;
-    border-radius: 8px;
-    margin-bottom: 25px;
-}
-
-.admin-subsection {
-    margin-bottom: 30px;
-    padding: 15px;
-    background: #333;
-    border-radius: 5px;
-}
-
-.admin-section h3 {
-    color: #ffc107;
-    margin-top: 0;
-    border-bottom: 1px solid #444;
-    padding-bottom: 10px;
-}
-
-.admin-section h4 {
-    color: #f5c518;
-    margin: 0 0 15px 0;
-}
-
-/* Amélioration des selects */
-select {
-    padding: 10px;
-    background: #444;
-    border: 1px solid #555;
-    border-radius: 5px;
-    color: white;
-    width: 100%;
-    margin-bottom: 15px;
-}
-
-/* Adaptation responsive */
-@media (max-width: 768px) {
-    .admin-subsection {
-        padding: 10px;
-    }
-    
-    .admin-section {
-        padding: 15px;
-    }
-}
-.inline-form {
-    display: inline;
+    box-shadow:
+        0 10px 30px rgba(220,53,69,.35);
 }
 
 .btn-danger-small {
-    background-color: #e74c3c;
+
+    background: #dc3545;
+
     color: white;
-    padding: 4px 8px;
+
     border: none;
+
+    padding: 6px 10px;
+
+    border-radius: 8px;
+
     cursor: pointer;
-    border-radius: 4px;
-    margin-left: 10px;
 }
 
-.btn-danger-small:hover {
-    background-color: #c0392b;
+/* ==========================
+   CRITIQUES
+========================== */
+
+.critique-list {
+    list-style: none;
+    padding: 0;
+}
+
+.critique-item {
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    padding: 18px;
+
+    margin-bottom: 15px;
+
+    background: rgba(255,255,255,.03);
+
+    border-radius: 14px;
+
+    border-left: 4px solid var(--primary);
+}
+
+.critique-id {
+    color: white;
+    font-weight: 600;
+}
+
+.critique-date {
+    color: var(--gray);
 }
 
 .critique-info {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    width: 100%;
+}
+
+/* ==========================
+   ADMIN
+========================== */
+
+.admin-tools {
+
+    margin-top: 40px;
+
+    padding-top: 30px;
+
+    border-top:
+        1px solid rgba(193,18,31,.2);
+}
+
+.admin-section {
+
+    background: rgba(255,255,255,.03);
+
+    border-radius: 20px;
+
+    padding: 25px;
+
+    margin-bottom: 25px;
+}
+
+.admin-subsection {
+
+    background: rgba(0,0,0,.15);
+
+    padding: 20px;
+
+    border-radius: 15px;
+
+    margin-top: 20px;
+}
+
+/* ==========================
+   ADMIN BUTTON
+========================== */
+
+.admin-button {
+
+    display: inline-block;
+
+    padding: 12px 20px;
+
+    text-decoration: none;
+
+    border-radius: 12px;
+
+    color: white;
+
+    background:
+        linear-gradient(
+            135deg,
+            var(--secondary),
+            var(--primary)
+        );
+}
+
+/* ==========================
+   ALERTES
+========================== */
+
+.message,
+.alert {
+
+    padding: 15px;
+
+    border-radius: 12px;
+
+    margin-bottom: 20px;
+}
+
+.alert {
+
+    background:
+        rgba(220,53,69,.08);
+
+    border:
+        1px solid rgba(220,53,69,.25);
+}
+
+/* ==========================
+   RESPONSIVE
+========================== */
+
+@media (max-width: 768px) {
+
+    .account-container {
+        margin: 30px 15px;
+        padding: 25px;
+    }
+
+    .critique-item,
+    .critique-info {
+        flex-direction: column;
+        gap: 10px;
+        align-items: flex-start;
+    }
+
+    .navbar-container {
+        flex-direction: column;
+        gap: 15px;
+    }
 }

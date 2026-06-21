@@ -79,7 +79,7 @@ if(!$critiques) {
                                 <span class="critique-date"><?= $critique['datecritique'] ?></span>
                             </div>
                             <form action="delete_critique.php" method="post" class="inline-form">
-                                <input type="hidden" name="critique_id" value=<?= $critique['idcritique'] ?>>
+                                <input type="hidden" name="critique_id" value="<?= $critique['idcritique'] ?>">
                                 <button type="submit" class="btn-danger-small">Supprimer</button>
                             </form>
                         </li>
