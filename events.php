@@ -1,60 +1,56 @@
 <?php
 session_start();
-include 'postgre.php';
+require_once __DIR__ . '/database.php';
 
-// Vérification de la connexion de l'utilisateur
 $is_logged_in = isset($_SESSION['user_id']);
 $id_user = $is_logged_in ? $_SESSION['user_id'] : null;
+$message = '';
 
-// Récupération des événements
-$query_events = "SELECT e.idevenement, e.nomevenement, e.dateevenement, e.descriptionevenement, t.libelletypeevenement 
-                 FROM evenement e
-                 LEFT JOIN typeevenement t ON e.idtypeevenement = t.idtypeevenement
-                 ORDER BY e.dateevenement DESC";
-
-$result_events = pg_query($conn, $query_events);
-
-if (!$result_events) {
-    die("Erreur lors de la récupération des événements.");
+try {
+    $stmt = $pdo->query("SELECT e.idevenement, e.nomevenement, e.dateevenement, e.descriptionevenement, t.libelletypeevenement FROM evenement e LEFT JOIN typeevenement t ON e.idtypeevenement = t.idtypeevenement ORDER BY e.dateevenement DESC");
+    $events = $stmt->fetchAll() ?: [];
+} catch (PDOException $e) {
+    die('Erreur lors de la récupération des événements : ' . htmlspecialchars($e->getMessage()));
 }
 
-$events = pg_fetch_all($result_events);
-
-// Récupération des participants pour chaque événement
 $participants = [];
-if ($events) {
-    foreach ($events as $event) {
-        $query_participants = "SELECT u.nomutilisateur, u.prenomutilisateur 
-                               FROM participation p
-                               JOIN utilisateur u ON p.idutilisateur = u.idutilisateur
-                               WHERE p.idevenement = $1";
-        $result_participants = pg_query_params($conn, $query_participants, [$event['idevenement']]);
-        $participants[$event['idevenement']] = pg_fetch_all($result_participants);
+foreach ($events as $event) {
+    try {
+        $stmt = $pdo->prepare("SELECT u.nomutilisateur, u.prenomutilisateur FROM participation p JOIN utilisateur u ON p.idutilisateur = u.idutilisateur WHERE p.idevenement = :idevenement");
+        $stmt->execute([':idevenement' => $event['idevenement']]);
+        $participants[$event['idevenement']] = $stmt->fetchAll() ?: [];
+    } catch (PDOException $e) {
+        $participants[$event['idevenement']] = [];
     }
 }
 
-// Gestion de l'inscription et de la désinscription
-$message = '';
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && $is_logged_in) {
-    $id_event = $_POST['id_event'];
+    $id_event = (int)($_POST['id_event'] ?? 0);
 
     if (isset($_POST['register_event'])) {
-        $query_check = "SELECT * FROM participation WHERE idevenement = $1 AND idutilisateur = $2";
-        $result_check = pg_query_params($conn, $query_check, [$id_event, $id_user]);
+        try {
+            $stmt = $pdo->prepare("SELECT 1 FROM participation WHERE idevenement = :idevenement AND idutilisateur = :idutilisateur");
+            $stmt->execute([':idevenement' => $id_event, ':idutilisateur' => $id_user]);
+            $exists = $stmt->fetchColumn();
 
-        if (pg_num_rows($result_check) > 0) {
-            $message = "Vous êtes déjà inscrit à cet événement.";
-        } else {
-            $query_register = "INSERT INTO participation (idevenement, idutilisateur) VALUES ($1, $2)";
-            $result_register = pg_query_params($conn, $query_register, [$id_event, $id_user]);
-
-            $message = $result_register ? "Inscription réussie !" : "Erreur d'inscription.";
+            if ($exists) {
+                $message = "Vous êtes déjà inscrit à cet événement.";
+            } else {
+                $stmt = $pdo->prepare("INSERT INTO participation (idevenement, idutilisateur) VALUES (:idevenement, :idutilisateur)");
+                $stmt->execute([':idevenement' => $id_event, ':idutilisateur' => $id_user]);
+                $message = "Inscription réussie !";
+            }
+        } catch (PDOException $e) {
+            $message = "Erreur d'inscription.";
         }
     } elseif (isset($_POST['unregister_event'])) {
-        $query_unregister = "DELETE FROM participation WHERE idevenement = $1 AND idutilisateur = $2";
-        $result_unregister = pg_query_params($conn, $query_unregister, [$id_event, $id_user]);
-
-        $message = $result_unregister ? "Désinscription réussie." : "Erreur de désinscription.";
+        try {
+            $stmt = $pdo->prepare("DELETE FROM participation WHERE idevenement = :idevenement AND idutilisateur = :idutilisateur");
+            $stmt->execute([':idevenement' => $id_event, ':idutilisateur' => $id_user]);
+            $message = "Désinscription réussie.";
+        } catch (PDOException $e) {
+            $message = "Erreur de désinscription.";
+        }
     }
 }
 ?>
@@ -68,37 +64,30 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $is_logged_in) {
     <link rel="stylesheet" href="public_css/events.css">
     <style>
         .event-item form button {
-    padding: 10px 20px;
-    font-size: 1rem;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-    margin-top: 10px;
-}
-
-/* Bouton S'inscrire */
-.event-item form button[name="register_event"] {
-    background-color: #28a745; /* vert */
-    color: white;
-}
-
-.event-item form button[name="register_event"]:hover {
-    background-color: #218838;
-}
-
-/* Bouton Se désinscrire */
-.event-item form button[name="unregister_event"] {
-    background-color: #dc3545; /* rouge */
-    color: white;
-}
-
-.event-item form button[name="unregister_event"]:hover {
-    background-color: #c82333;
-}
-</style>
+            padding: 10px 20px;
+            font-size: 1rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            margin-top: 10px;
+        }
+        .event-item form button[name="register_event"] {
+            background-color: #28a745;
+            color: white;
+        }
+        .event-item form button[name="register_event"]:hover {
+            background-color: #218838;
+        }
+        .event-item form button[name="unregister_event"] {
+            background-color: #dc3545;
+            color: white;
+        }
+        .event-item form button[name="unregister_event"]:hover {
+            background-color: #c82333;
+        }
+    </style>
 </head>
-
 <body>
 <?php include 'includes/navbar.php'; ?>
 
@@ -130,10 +119,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $is_logged_in) {
                     <form method="POST">
                         <input type="hidden" name="id_event" value="<?php echo htmlspecialchars($event['idevenement']); ?>">
                         <?php
-                        $query_check_user = "SELECT 1 FROM participation WHERE idevenement = $1 AND idutilisateur = $2";
-                        $result_check_user = pg_query_params($conn, $query_check_user, [$event['idevenement'], $id_user]);
-
-                        if (pg_num_rows($result_check_user) > 0): ?>
+                        try {
+                            $checkStmt = $pdo->prepare("SELECT 1 FROM participation WHERE idevenement = :idevenement AND idutilisateur = :idutilisateur");
+                            $checkStmt->execute([':idevenement' => $event['idevenement'], ':idutilisateur' => $id_user]);
+                            $registered = $checkStmt->fetchColumn();
+                        } catch (PDOException $e) {
+                            $registered = false;
+                        }
+                        if ($registered): ?>
                             <button type="submit" name="unregister_event">Se désinscrire</button>
                         <?php else: ?>
                             <button type="submit" name="register_event">S'inscrire à cet événement</button>
