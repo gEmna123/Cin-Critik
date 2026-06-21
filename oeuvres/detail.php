@@ -9,7 +9,7 @@ try {
     $stmt->execute([':id' => $id]);
     $work = $stmt->fetch();
 } catch (PDOException $e) {
-    die('Erreur lors de la récupération de l'œuvre : ' . htmlspecialchars($e->getMessage()));
+    die('Erreur lors de la récupération de l\'œuvre : ' . htmlspecialchars($e->getMessage()));
 }
 
 if (!$work) {
