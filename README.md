@@ -1,39 +1,118 @@
-# 🎬 Cin-Critik
+# Cin-Critik
 
-> **Cin-Critik** est une plateforme web collaborative développée en **PHP** et **PostgreSQL** permettant aux utilisateurs de découvrir, consulter et évaluer des œuvres culturelles. L'application centralise la gestion des œuvres, des auteurs, des événements culturels et des critiques utilisateurs au sein d'une interface simple et intuitive.
+Plateforme web de critiques culturelles développée en PHP et PostgreSQL permettant la gestion des œuvres, auteurs, événements et critiques utilisateurs.
 
----
+## Fonctionnalités
 
-## ✨ Fonctionnalités
-
-* 📚 Consultation et gestion des œuvres culturelles
-* ✍️ Gestion des auteurs et de leurs œuvres
-* ⭐ Publication et consultation de critiques
-* 🎭 Gestion des événements culturels
-* 👤 Gestion des utilisateurs
-* 🔍 Recherche et navigation dans les contenus
-* 🗄️ Stockage des données avec PostgreSQL
-* 🔒 Accès sécurisé aux données via PHP et PDO
+* Authentification des utilisateurs (connexion, inscription, déconnexion)
+* Gestion des œuvres et des auteurs
+* Consultation des événements culturels
+* Publication et suppression de critiques
+* Gestion du compte utilisateur
+* Interface d'administration
+* Réinitialisation de mot de passe
+* Utilisation de PDO et requêtes préparées pour sécuriser les accès à la base de données
 
 ---
 
-## 🛠️ Technologies utilisées
+# Installation
 
-* PHP
+## 1. Cloner le projet
+
+```bash
+git clone <repository_url>
+cd Cin-Critik
+```
+
+## 2. Configurer la base de données
+
+Créer une base PostgreSQL puis exécuter :
+
+```bash
+psql -U postgres -d cin_critik -f admin/test_bd.sql
+```
+
+## 3. Configurer la connexion
+
+Modifier les informations de connexion dans :
+
+```bash
+database.php
+```
+
+Exemple :
+
+```php
+$host = "localhost";
+$dbname = "cin_critik";
+$user = "postgres";
+$password = "password";
+```
+
+## 4. Lancer le serveur
+
+```bash
+php -S localhost:8000
+```
+
+Puis accéder à :
+
+```text
+http://localhost:8000
+```
+
+---
+
+# Structure du projet
+
+```text
+.
+├── index.php                 # Page d'accueil
+├── login.php                 # Connexion
+├── register.php              # Inscription
+├── logout.php                # Déconnexion
+├── account.php               # Profil utilisateur
+├── events.php                # Liste des événements
+├── admin.php                 # Administration
+├── database.php              # Connexion PDO
+│
+├── auteurs/
+│   ├── liste_auteur.php      # Liste des auteurs
+│   ├── detail_auteur.php     # Détail d'un auteur
+│   └── images/               # Images des auteurs
+│
+├── oeuvres/
+│   ├── liste.php             # Liste des œuvres
+│   ├── detail.php            # Détail d'une œuvre
+│   └── images/               # Images des œuvres
+│
+├── includes/
+│   ├── navbar.php            # Barre de navigation
+│   └── footer.php            # Pied de page
+│
+├── public_css/               # Feuilles de style
+│
+└── admin/
+    └── test_bd.sql           # Script de création de la base
+```
+
+---
+
+# Technologies utilisées
+
+* PHP 8+
 * PostgreSQL
 * PDO
 * HTML5
 * CSS3
-* JavaScript
+* Sessions PHP
 
 ---
 
-## 🎯 Objectifs pédagogiques
+# Sécurité
 
-Ce projet a été réalisé dans le cadre d'un enseignement de développement web et de bases de données. Il vise à mettre en pratique :
-
-* La conception d'une base de données relationnelle ;
-* L'utilisation de PostgreSQL ;
-* Le développement d'une application web dynamique en PHP ;
-* L'utilisation de PDO et des requêtes préparées ;
-* La gestion collaborative du code avec Git et GitHub.
+* Requêtes préparées PDO
+* Hachage des mots de passe avec `password_hash()`
+* Vérification des mots de passe avec `password_verify()`
+* Protection contre les injections SQL
+* Validation des données utilisateur
