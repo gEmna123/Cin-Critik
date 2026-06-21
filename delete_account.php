@@ -1,8 +1,7 @@
 <?php
 session_start();
-require_once("postgre.php");
+require_once __DIR__ . '/database.php';
 
-// Vérifier que l'utilisateur est connecté
 if (!isset($_SESSION['user_id'])) {
     header('Location: login.php');
     exit;
@@ -10,22 +9,21 @@ if (!isset($_SESSION['user_id'])) {
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $user_id = $_SESSION['user_id'];
-    
-    // Supprimer les critiques de l'utilisateur
-    $delete_critiques = "DELETE FROM critique WHERE idutilisateur = $1";
-    pg_query_params($conn, $delete_critiques, [$user_id]);
-    
-    // Supprimer l'utilisateur
-    $delete_user = "DELETE FROM utilisateur WHERE idutilisateur = $1";
-    $result = pg_query_params($conn, $delete_user, [$user_id]);
-    
-    if ($result) {
-        // Détruire la session et rediriger
+
+    try {
+        $pdo->beginTransaction();
+        $stmt = $pdo->prepare("DELETE FROM critique WHERE idutilisateur = :id");
+        $stmt->execute([':id' => $user_id]);
+        $stmt = $pdo->prepare("DELETE FROM utilisateur WHERE idutilisateur = :id");
+        $stmt->execute([':id' => $user_id]);
+        $pdo->commit();
+
         session_destroy();
         header('Location: index.php?message=Compte supprimé avec succès');
         exit;
-    } else {
-        $error = 'Erreur lors de la suppression du compte : ' . pg_last_error($conn);
+    } catch (PDOException $e) {
+        $pdo->rollBack();
+        $error = 'Erreur lors de la suppression du compte.';
     }
 }
 ?>

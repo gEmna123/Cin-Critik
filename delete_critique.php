@@ -1,8 +1,7 @@
 <?php
 session_start();
-require_once("postgre.php");
+require_once __DIR__ . '/database.php';
 
-// Vérifier que l'utilisateur est connecté
 if (!isset($_SESSION['user_id'])) {
     header('Location: login.php');
     exit;
@@ -11,25 +10,21 @@ if (!isset($_SESSION['user_id'])) {
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['critique_id'])) {
     $user_id = $_SESSION['user_id'];
     $critique_id = intval($_POST['critique_id']);
-    
-    // Vérifier que la critique appartient à l'utilisateur
-    $check_query = "SELECT idutilisateur FROM critique WHERE idcritique = $1";
-    $check_result = pg_query_params($conn, $check_query, [$critique_id]);
-    $critique = pg_fetch_assoc($check_result);
-    
-    if ($critique && $critique['idutilisateur'] == $user_id) {
-        // Supprimer la critique
-        $delete_query = "DELETE FROM critique WHERE idcritique = $1";
-        $result = pg_query_params($conn, $delete_query, [$critique_id]);
-        
-        if ($result) {
+
+    try {
+        $stmt = $pdo->prepare("SELECT idutilisateur FROM critique WHERE idcritique = :id");
+        $stmt->execute([':id' => $critique_id]);
+        $critique = $stmt->fetch();
+
+        if ($critique && $critique['idutilisateur'] == $user_id) {
+            $deleteStmt = $pdo->prepare("DELETE FROM critique WHERE idcritique = :id");
+            $deleteStmt->execute([':id' => $critique_id]);
             header('Location: account.php');
             exit;
-        } else {
-            $error = 'Erreur lors de la suppression de la critique : ' . pg_last_error($conn);
         }
-    } else {
-        $error = 'Vous n\'êtes pas autorisé à supprimer cette critique.';
+        $error = 'Vous n'êtes pas autorisé à supprimer cette critique.';
+    } catch (PDOException $e) {
+        $error = 'Erreur lors de la suppression de la critique.';
     }
 } else {
     header('Location: account.php');
