@@ -15,9 +15,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['ajouter_oeuvre'])) {
         $query = "INSERT INTO Oeuvre (titreOeuvre, descriptionOeuvre) VALUES (:titre, :description)";
         $stmt = $pdo->prepare($query);
         $stmt->execute([':titre' => $titre, ':description' => $description]);
-        $_SESSION['message'] = ['type' => 'success', 'text' => 'Œuvre ajoutée avec succès.'];
+        $_SESSION['message'] = ['type' => 'success', 'text' => "Œuvre ajoutée avec succès."];
     } catch (PDOException $e) {
-        $_SESSION['message'] = ['type' => 'error', 'text' => 'Erreur lors de l'ajout de l'œuvre : ' . $e->getMessage()];
+        $_SESSION['message'] = ['type' => 'error', 'text' => "Erreur lors de l'ajout de l'œuvre : " . $e->getMessage()];
     }
     header('Location: admin_oeuvres.php');
     exit();
@@ -32,9 +32,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['modifier_oeuvre'])) {
         $query = "UPDATE Oeuvre SET titreOeuvre = :titre, descriptionOeuvre = :description WHERE idOeuvre = :idOeuvre";
         $stmt = $pdo->prepare($query);
         $stmt->execute([':titre' => $titre, ':description' => $description, ':idOeuvre' => $idOeuvre]);
-        $_SESSION['message'] = ['type' => 'success', 'text' => 'Œuvre modifiée avec succès.'];
+        $_SESSION['message'] = ['type' => 'success', 'text' => "Œuvre modifiée avec succès."];
     } catch (PDOException $e) {
-        $_SESSION['message'] = ['type' => 'error', 'text' => 'Erreur lors de la modification de l'œuvre : ' . $e->getMessage()];
+        $_SESSION['message'] = ['type' => 'error', 'text' => "Erreur lors de la modification de l'œuvre : " . $e->getMessage()];
     }
     header('Location: admin_oeuvres.php');
     exit();
@@ -45,9 +45,9 @@ if (isset($_GET['supprimer'])) {
     try {
         $stmt = $pdo->prepare("DELETE FROM Oeuvre WHERE idOeuvre = :id");
         $stmt->execute([':id' => $id]);
-        $_SESSION['message'] = ['type' => 'success', 'text' => 'Œuvre supprimée avec succès.'];
+        $_SESSION['message'] = ['type' => 'success', 'text' => "Œuvre supprimée avec succès."];
     } catch (PDOException $e) {
-        $_SESSION['message'] = ['type' => 'error', 'text' => 'Erreur lors de la suppression de l'œuvre : ' . $e->getMessage()];
+        $_SESSION['message'] = ['type' => 'error', 'text' => "Erreur lors de la suppression de l'œuvre : " . $e->getMessage()];
     }
     header('Location: admin_oeuvres.php');
     exit();
@@ -58,7 +58,7 @@ try {
     $oeuvres = $stmt->fetchAll() ?: [];
 } catch (PDOException $e) {
     $oeuvres = [];
-    $_SESSION['message'] = ['type' => 'error', 'text' => 'Erreur lors de la récupération des œuvres : ' . $e->getMessage()];
+    $_SESSION['message'] = ['type' => 'error', 'text' => "Erreur lors de la récupération des œuvres : " . $e->getMessage()];
 }
 ?>
 
