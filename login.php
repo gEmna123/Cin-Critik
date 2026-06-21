@@ -18,7 +18,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $user = pg_fetch_assoc($result);
 
         // Vérification du mot de passe
-        if (password_verify($password, $user['mdputilisateur'])) {
+        if ($password === $user['mdputilisateur']) {
             // Connexion réussie
             $_SESSION['user_id'] = $user['idutilisateur'];
             $_SESSION['idrole'] = $user['idrole'];
