@@ -20,7 +20,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['ajouter'])) {
         $stmt->execute([':nom' => $nom, ':prenom' => $prenom, ':email' => $email, ':mdp' => $mdp, ':role' => $role]);
         $_SESSION['message'] = ['type' => 'success', 'text' => 'Utilisateur ajouté avec succès.'];
     } catch (PDOException $e) {
-        $_SESSION['message'] = ['type' => 'error', 'text' => 'Erreur lors de l'ajout de l'utilisateur : ' . $e->getMessage()];
+        $_SESSION['message'] = ['type' => 'error', 'text' => "Erreur lors de l'ajout de l'utilisateur : " . $e->getMessage()];
     }
 }
 
@@ -30,7 +30,7 @@ if (isset($_GET['supprimer'])) {
         $stmt = $pdo->prepare("DELETE FROM Utilisateur WHERE idUtilisateur = :id");
         $stmt->execute([':id' => $id]);
     } catch (PDOException $e) {
-        $_SESSION['message'] = ['type' => 'error', 'text' => 'Erreur lors de la suppression de l'utilisateur : ' . $e->getMessage()];
+        $_SESSION['message'] = ['type' => 'error', 'text' => "Erreur lors de la suppression de l'utilisateur : " . $e->getMessage()];
     }
 }
 
