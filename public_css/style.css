@@ -1,0 +1,339 @@
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Poppins:wght@300;400;500;600&display=swap');
+
+:root {
+    --bg: #0b0b0f;
+    --card: #15151c;
+
+    --primary: #c1121f;
+    --secondary: #8b1e2d;
+
+    --white: #f8f9fa;
+    --gray: #b8b8b8;
+}
+
+/* ==========================
+   BASE
+========================== */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+
+    background:
+        radial-gradient(circle at top left,
+            rgba(193,18,31,.15),
+            transparent 35%),
+
+        radial-gradient(circle at bottom right,
+            rgba(139,30,45,.15),
+            transparent 35%),
+
+        var(--bg);
+
+    color: var(--white);
+    min-height: 100vh;
+}
+
+/* ==========================
+   NAVBAR
+========================== */
+
+.navbar {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+
+    background: rgba(10,10,15,.92);
+
+    backdrop-filter: blur(20px);
+
+    border-bottom: 1px solid rgba(193,18,31,.15);
+
+    box-shadow:
+        0 5px 20px rgba(0,0,0,.3);
+}
+
+.navbar-container {
+    max-width: 1300px;
+    margin: auto;
+
+    padding: 18px 40px;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.navbar-logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    font-family: 'Cinzel', serif;
+    font-size: 1.8rem;
+    font-weight: 700;
+
+    color: white;
+    letter-spacing: 2px;
+}
+
+.navbar-logo img {
+    height: 55px;
+    width: auto;
+
+    filter:
+        drop-shadow(0 0 15px rgba(193,18,31,.35));
+}
+
+.navbar-links {
+    list-style: none;
+    display: flex;
+    gap: 15px;
+}
+
+.navbar-links li a {
+    text-decoration: none;
+    color: white;
+
+    padding: 10px 18px;
+
+    border-radius: 12px;
+
+    transition: .3s;
+}
+
+.navbar-links li a:hover {
+    background: rgba(193,18,31,.15);
+    transform: translateY(-2px);
+}
+
+/* ==========================
+   TITRE
+========================== */
+
+h1 {
+    text-align: center;
+
+    font-family: 'Cinzel', serif;
+
+    margin-top: 50px;
+    margin-bottom: 15px;
+
+    font-size: 3rem;
+
+    color: white;
+
+    letter-spacing: 3px;
+}
+
+h1::after {
+    content: "";
+
+    display: block;
+
+    width: 120px;
+    height: 4px;
+
+    margin: 15px auto;
+
+    border-radius: 50px;
+
+    background:
+        linear-gradient(
+            to right,
+            var(--secondary),
+            var(--primary)
+        );
+}
+
+/* ==========================
+   MOSAÏQUE
+========================== */
+
+.mosaic-container {
+
+    max-width: 1400px;
+
+    margin: 50px auto;
+
+    padding: 20px;
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(auto-fill, minmax(280px, 1fr));
+
+    gap: 30px;
+}
+
+/* ==========================
+   CARTE
+========================== */
+
+.mosaic-item {
+
+    background: rgba(21,21,28,.95);
+
+    border: 1px solid rgba(193,18,31,.15);
+
+    border-radius: 24px;
+
+    overflow: hidden;
+
+    backdrop-filter: blur(20px);
+
+    box-shadow:
+        0 15px 40px rgba(0,0,0,.4);
+
+    transition: .35s ease;
+}
+
+.mosaic-item:hover {
+
+    transform:
+        translateY(-10px)
+        scale(1.02);
+
+    border-color:
+        rgba(193,18,31,.35);
+
+    box-shadow:
+        0 20px 50px rgba(0,0,0,.55);
+}
+
+/* ==========================
+   IMAGE
+========================== */
+
+.mosaic-item img {
+
+    width: 100%;
+    height: 360px;
+
+    object-fit: cover;
+
+    transition: .5s ease;
+}
+
+.mosaic-item:hover img {
+    transform: scale(1.05);
+}
+
+/* ==========================
+   TITRE CARTE
+========================== */
+
+.mosaic-item h3 {
+
+    font-family: 'Cinzel', serif;
+
+    color: white;
+
+    font-size: 1.3rem;
+
+    margin: 20px 20px 10px;
+}
+
+/* ==========================
+   DESCRIPTION
+========================== */
+
+.mosaic-item p {
+
+    color: var(--gray);
+
+    line-height: 1.7;
+
+    margin: 0 20px 20px;
+}
+
+/* ==========================
+   BOUTON
+========================== */
+
+.mosaic-item .btn {
+
+    display: block;
+
+    margin: 20px;
+
+    padding: 12px;
+
+    text-align: center;
+
+    text-decoration: none;
+
+    color: white;
+
+    font-weight: 600;
+
+    border-radius: 12px;
+
+    background:
+        linear-gradient(
+            135deg,
+            var(--secondary),
+            var(--primary)
+        );
+
+    transition: .3s;
+}
+
+.mosaic-item .btn:hover {
+
+    transform: translateY(-3px);
+
+    box-shadow:
+        0 10px 30px rgba(193,18,31,.35);
+}
+
+/* ==========================
+   FOOTER
+========================== */
+
+footer {
+
+    margin-top: 80px;
+
+    background: rgba(10,10,15,.92);
+
+    backdrop-filter: blur(20px);
+
+    border-top: 1px solid rgba(193,18,31,.15);
+
+    text-align: center;
+
+    padding: 25px;
+
+    color: #888;
+}
+
+/* ==========================
+   RESPONSIVE
+========================== */
+
+@media (max-width: 768px) {
+
+    .navbar-container {
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .navbar-links {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    h1 {
+        font-size: 2rem;
+    }
+
+    .mosaic-item img {
+        height: 250px;
+    }
+}

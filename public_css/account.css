@@ -1,0 +1,448 @@
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Poppins:wght@300;400;500;600&display=swap');
+
+:root {
+    --bg: #0b0b0f;
+    --card: #15151c;
+
+    --primary: #c1121f;
+    --secondary: #8b1e2d;
+
+    --white: #f8f9fa;
+    --gray: #b8b8b8;
+
+    --danger: #dc3545;
+}
+
+/* ==========================
+   BASE
+========================== */
+
+body {
+    margin: 0;
+    font-family: 'Poppins', sans-serif;
+
+    background:
+        radial-gradient(circle at top left,
+            rgba(193,18,31,.15),
+            transparent 35%),
+        radial-gradient(circle at bottom right,
+            rgba(139,30,45,.15),
+            transparent 35%),
+        var(--bg);
+
+    color: var(--white);
+}
+
+/* ==========================
+   NAVBAR
+========================== */
+
+.navbar {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+
+    background: rgba(10,10,15,.92);
+    backdrop-filter: blur(20px);
+
+    border-bottom: 1px solid rgba(193,18,31,.15);
+}
+
+.navbar-container {
+    max-width: 1300px;
+    margin: auto;
+
+    padding: 18px 40px;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.navbar-logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    font-family: 'Cinzel', serif;
+    font-size: 1.8rem;
+
+    color: white;
+}
+
+.navbar-logo img {
+    height: 55px;
+}
+
+.navbar-links {
+    display: flex;
+    gap: 15px;
+    list-style: none;
+}
+
+.navbar-links a {
+    color: white;
+    text-decoration: none;
+
+    padding: 10px 18px;
+
+    border-radius: 12px;
+
+    transition: .3s;
+}
+
+.navbar-links a:hover {
+    background: rgba(193,18,31,.15);
+}
+
+/* ==========================
+   PAGE
+========================== */
+
+.account-container {
+
+    max-width: 1000px;
+
+    margin: 60px auto;
+
+    padding: 40px;
+
+    background: rgba(21,21,28,.95);
+
+    border: 1px solid rgba(193,18,31,.15);
+
+    border-radius: 24px;
+
+    backdrop-filter: blur(20px);
+
+    box-shadow:
+        0 15px 40px rgba(0,0,0,.4);
+}
+
+/* ==========================
+   TITRES
+========================== */
+
+.account-container h1 {
+
+    text-align: center;
+
+    font-family: 'Cinzel', serif;
+
+    font-size: 2.5rem;
+
+    color: white;
+
+    margin-bottom: 35px;
+}
+
+.account-container h2 {
+
+    color: white;
+
+    margin-bottom: 20px;
+
+    font-size: 1.5rem;
+}
+
+.account-container h3,
+.account-container h4 {
+    color: white;
+}
+
+/* ==========================
+   SECTIONS
+========================== */
+
+.account-section {
+
+    background: rgba(255,255,255,.02);
+
+    border: 1px solid rgba(255,255,255,.05);
+
+    border-radius: 20px;
+
+    padding: 25px;
+
+    margin-bottom: 25px;
+}
+
+/* ==========================
+   ZONE DANGER
+========================== */
+
+.danger-zone {
+
+    border: 1px solid rgba(220,53,69,.3);
+
+    background:
+        rgba(220,53,69,.08);
+}
+
+/* ==========================
+   FORMULAIRES
+========================== */
+
+.account-form,
+.delete-form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-group label {
+
+    color: var(--white);
+
+    margin-bottom: 8px;
+}
+
+.form-group input,
+.form-group textarea,
+select {
+
+    padding: 14px;
+
+    border-radius: 12px;
+
+    background: rgba(255,255,255,.03);
+
+    border: 1px solid rgba(255,255,255,.08);
+
+    color: white;
+}
+
+.form-group input:focus,
+.form-group textarea:focus,
+select:focus {
+
+    outline: none;
+
+    border-color: var(--primary);
+
+    box-shadow:
+        0 0 15px rgba(193,18,31,.25);
+}
+
+/* ==========================
+   BOUTONS
+========================== */
+
+.btn,
+.btn-primary {
+
+    background:
+        linear-gradient(
+            135deg,
+            var(--secondary),
+            var(--primary)
+        );
+
+    color: white;
+
+    border: none;
+
+    padding: 12px 20px;
+
+    border-radius: 12px;
+
+    cursor: pointer;
+
+    font-weight: 600;
+
+    transition: .3s;
+}
+
+.btn:hover,
+.btn-primary:hover {
+
+    transform: translateY(-3px);
+
+    box-shadow:
+        0 10px 30px rgba(193,18,31,.35);
+}
+
+.btn-danger {
+
+    background:
+        linear-gradient(
+            135deg,
+            #9f1239,
+            #dc3545
+        );
+}
+
+.btn-danger:hover {
+
+    box-shadow:
+        0 10px 30px rgba(220,53,69,.35);
+}
+
+.btn-danger-small {
+
+    background: #dc3545;
+
+    color: white;
+
+    border: none;
+
+    padding: 6px 10px;
+
+    border-radius: 8px;
+
+    cursor: pointer;
+}
+
+/* ==========================
+   CRITIQUES
+========================== */
+
+.critique-list {
+    list-style: none;
+    padding: 0;
+}
+
+.critique-item {
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    padding: 18px;
+
+    margin-bottom: 15px;
+
+    background: rgba(255,255,255,.03);
+
+    border-radius: 14px;
+
+    border-left: 4px solid var(--primary);
+}
+
+.critique-id {
+    color: white;
+    font-weight: 600;
+}
+
+.critique-date {
+    color: var(--gray);
+}
+
+.critique-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+
+/* ==========================
+   ADMIN
+========================== */
+
+.admin-tools {
+
+    margin-top: 40px;
+
+    padding-top: 30px;
+
+    border-top:
+        1px solid rgba(193,18,31,.2);
+}
+
+.admin-section {
+
+    background: rgba(255,255,255,.03);
+
+    border-radius: 20px;
+
+    padding: 25px;
+
+    margin-bottom: 25px;
+}
+
+.admin-subsection {
+
+    background: rgba(0,0,0,.15);
+
+    padding: 20px;
+
+    border-radius: 15px;
+
+    margin-top: 20px;
+}
+
+/* ==========================
+   ADMIN BUTTON
+========================== */
+
+.admin-button {
+
+    display: inline-block;
+
+    padding: 12px 20px;
+
+    text-decoration: none;
+
+    border-radius: 12px;
+
+    color: white;
+
+    background:
+        linear-gradient(
+            135deg,
+            var(--secondary),
+            var(--primary)
+        );
+}
+
+/* ==========================
+   ALERTES
+========================== */
+
+.message,
+.alert {
+
+    padding: 15px;
+
+    border-radius: 12px;
+
+    margin-bottom: 20px;
+}
+
+.alert {
+
+    background:
+        rgba(220,53,69,.08);
+
+    border:
+        1px solid rgba(220,53,69,.25);
+}
+
+/* ==========================
+   RESPONSIVE
+========================== */
+
+@media (max-width: 768px) {
+
+    .account-container {
+        margin: 30px 15px;
+        padding: 25px;
+    }
+
+    .critique-item,
+    .critique-info {
+        flex-direction: column;
+        gap: 10px;
+        align-items: flex-start;
+    }
+
+    .navbar-container {
+        flex-direction: column;
+        gap: 15px;
+    }
+}
