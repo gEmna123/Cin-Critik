@@ -9,7 +9,7 @@ try {
     $stmt->execute([':id' => $id]);
     $author = $stmt->fetch();
 } catch (PDOException $e) {
-    die('Erreur lors de la récupération de l'auteur : ' . htmlspecialchars($e->getMessage()));
+    die('Erreur lors de la récupération de l\'auteur : ' . htmlspecialchars($e->getMessage()));
 }
 
 if (!$author) {
