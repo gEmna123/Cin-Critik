@@ -1,24 +1,28 @@
 <?php
-// filepath: /home/etu/test99999/auteurs/detail_auteur.php
-
 session_start();
-include '../postgre.php';
+require_once __DIR__ . '/../database.php';
 
-$id = intval($_GET['id']);
+$id = isset($_GET['id']) ? intval($_GET['id']) : 0;
 
-// Récupération des détails de l'auteur
-$query_author = "SELECT nomauteur, prenomauteur, datenaissanceauteur FROM auteur WHERE idauteur = $1";
-$result_author = pg_query_params($conn, $query_author, [$id]);
-$author = pg_fetch_assoc($result_author);
+try {
+    $stmt = $pdo->prepare("SELECT nomauteur, prenomauteur, datenaissanceauteur FROM auteur WHERE idauteur = :id");
+    $stmt->execute([':id' => $id]);
+    $author = $stmt->fetch();
+} catch (PDOException $e) {
+    die('Erreur lors de la récupération de l'auteur : ' . htmlspecialchars($e->getMessage()));
+}
 
 if (!$author) {
     die("Auteur introuvable.");
 }
 
-// Récupération des œuvres de l'auteur
-$query_works = "SELECT idoeuvre, titreoeuvre, descriptionoeuvre FROM oeuvre WHERE idauteur = $1";
-$result_works = pg_query_params($conn, $query_works, [$id]);
-$works = pg_fetch_all($result_works);
+try {
+    $stmt = $pdo->prepare("SELECT idoeuvre, titreoeuvre, descriptionoeuvre FROM oeuvre WHERE idauteur = :id");
+    $stmt->execute([':id' => $id]);
+    $works = $stmt->fetchAll() ?: [];
+} catch (PDOException $e) {
+    $works = [];
+}
 ?>
 
 <!DOCTYPE html>
@@ -30,20 +34,17 @@ $works = pg_fetch_all($result_works);
     <link rel="stylesheet" href="css/detail_auteur.css">
 </head>
 <body>
-    <?php include '../includes/navbar.php'; ?>
+    <?php include __DIR__ . '/../includes/navbar.php'; ?>
 
     <div class="detail-container">
-        <!-- Image de l'auteur en arrière-plan -->
         <div class="detail-header" style="background-image: url('images/<?php echo $id; ?>.jpg');">
             <h1><?php echo htmlspecialchars($author['prenomauteur'] . ' ' . $author['nomauteur']); ?></h1>
         </div>
 
-        <!-- Informations principales -->
         <div class="detail-content">
             <p><strong>Date de naissance :</strong> <?php echo htmlspecialchars($author['datenaissanceauteur']); ?></p>
         </div>
 
-        <!-- Liste des œuvres de l'auteur -->
         <div class="detail-works">
             <h2>Œuvres de l'auteur</h2>
             <?php if ($works): ?>
@@ -62,6 +63,6 @@ $works = pg_fetch_all($result_works);
         </div>
     </div>
 
-    <?php include '../includes/footer.php'; ?>
+    <?php include __DIR__ . '/../includes/footer.php'; ?>
 </body>
 </html>

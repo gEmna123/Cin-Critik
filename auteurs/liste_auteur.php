@@ -1,21 +1,13 @@
 <?php
-// filepath: /home/etu/test99999/auteurs/liste_auteur.php
-
 session_start();
-include '../postgre.php'; // Connexion à la base de données
+require_once __DIR__ . '/../database.php';
 
-// Récupération des auteurs
-$query_authors = "SELECT idauteur, nomauteur, prenomauteur, datenaissanceauteur FROM auteur";
-$result = pg_query($conn, $query_authors);  // Utilisation de pg_query() pour exécuter la requête
-
-// Vérification de la réussite de la requête
-if (!$result) {
-    die("Erreur lors de la récupération des auteurs : " . pg_last_error($conn));
+try {
+    $stmt = $pdo->query("SELECT idauteur, nomauteur, prenomauteur, datenaissanceauteur FROM auteur");
+    $authors = $stmt->fetchAll() ?: [];
+} catch (PDOException $e) {
+    die('Erreur lors de la récupération des auteurs : ' . htmlspecialchars($e->getMessage()));
 }
-
-// Récupération des résultats sous forme de tableau associatif
-$authors = pg_fetch_all($result);
-
 ?>
 
 <!DOCTYPE html>
@@ -27,14 +19,13 @@ $authors = pg_fetch_all($result);
     <link rel="stylesheet" href="css/liste_auteur.css">
 </head>
 <body>
-    <?php include '../includes/navbar.php'; ?>
+    <?php include __DIR__ . '/../includes/navbar.php'; ?>
 
     <h1>Liste des Auteurs</h1>
     <div class="mosaic-container">
         <?php if ($authors): ?>
             <?php foreach ($authors as $author): ?>
                 <div class="mosaic-item">
-                    <!-- Image de l'auteur -->
                     <img src="images/<?php echo $author['idauteur']; ?>.jpg" 
                          alt="Image de <?php echo htmlspecialchars($author['prenomauteur'] . ' ' . $author['nomauteur']); ?>" 
                          onerror="this.src='../assets/images/default_author.jpg';">
@@ -48,6 +39,6 @@ $authors = pg_fetch_all($result);
         <?php endif; ?>
     </div>
 
-    <?php include '../includes/footer.php'; ?>
+    <?php include __DIR__ . '/../includes/footer.php'; ?>
 </body>
 </html>

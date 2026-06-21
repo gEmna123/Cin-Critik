@@ -1,13 +1,14 @@
 <?php
-// filepath: /home/etu/test99999/oeuvres/liste.php
-
 session_start();
-include '../postgre.php';
+require_once __DIR__ . '/../database.php';
 
-// Récupération des œuvres
-$query_works = "SELECT idoeuvre, titreoeuvre, descriptionoeuvre FROM Oeuvre";
-$result_works = pg_query($conn, $query_works);
-$works = pg_fetch_all($result_works);
+try {
+    $stmt = $pdo->query("SELECT idoeuvre, titreoeuvre, descriptionoeuvre FROM Oeuvre");
+    $works = $stmt->fetchAll() ?: [];
+} catch (PDOException $e) {
+    $works = [];
+    error_log('Erreur PDO oeuvres/liste: ' . $e->getMessage());
+}
 ?>
 
 <!DOCTYPE html>
@@ -18,13 +19,12 @@ $works = pg_fetch_all($result_works);
     <link rel="stylesheet" href="css/liste_oeuvre.css">
 </head>
 <body>
-    <?php include '../includes/navbar.php'; ?>
+    <?php include __DIR__ . '/../includes/navbar.php'; ?>
     <h1>Liste des Œuvres</h1>
     <div class="mosaic-container">
         <?php if ($works): ?>
             <?php foreach ($works as $work): ?>
                 <div class="mosaic-item">
-                    <!-- Vérification et affichage de l'image -->
                     <img src="images/<?php echo $work['idoeuvre']; ?>.jpg" 
                          alt="Image de <?php echo htmlspecialchars($work['titreoeuvre']); ?>" 
                          onerror="this.src='../assets/images/default.jpg';">
@@ -38,6 +38,6 @@ $works = pg_fetch_all($result_works);
         <?php endif; ?>
     </div>
 
-    <?php include '../includes/footer.php'; ?>
+    <?php include __DIR__ . '/../includes/footer.php'; ?>
 </body>
 </html>
