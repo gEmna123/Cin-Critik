@@ -1,40 +1,39 @@
 <?php
-// filepath: /home/etu/test99999/login.php
-
-include 'postgre.php';
+require_once __DIR__ . '/database.php';
 session_start();
 
 $error = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $email = $_POST['email'];
-    $password = $_POST['password'];
+    $email = trim($_POST['email'] ?? '');
+    $password = $_POST['password'] ?? '';
 
-    // Vérification des informations dans la base de données
-    $query = "SELECT idutilisateur, mdputilisateur, idrole,nomutilisateur, prenomutilisateur FROM utilisateur WHERE emailutilisateur = $1";
-    $result = pg_query_params($conn, $query, [$email]);
+    $query = "SELECT idutilisateur, mdputilisateur, idrole, nomutilisateur, prenomutilisateur FROM utilisateur WHERE emailutilisateur = :email";
 
-    if ($result && pg_num_rows($result) > 0) {
-        $user = pg_fetch_assoc($result);
+    try {
+        $stmt = $pdo->prepare($query);
+        $stmt->execute([':email' => $email]);
+        $user = $stmt->fetch();
 
-        // Vérification du mot de passe
-        if ($password === $user['mdputilisateur']) {
-            // Connexion réussie
-            $_SESSION['user_id'] = $user['idutilisateur'];
-            $_SESSION['idrole'] = $user['idrole'];
-            $_SESSION['username'] = $user['prenomutilisateur'] . ' ' . $user['nomutilisateur'];
+        if ($user) {
+            if ($password === $user['mdputilisateur']) {
+                $_SESSION['user_id'] = $user['idutilisateur'];
+                $_SESSION['idrole'] = $user['idrole'];
+                $_SESSION['username'] = $user['prenomutilisateur'] . ' ' . $user['nomutilisateur'];
 
-            if ($user['idrole'] == 1) {
-   	    	header('Location: admin.php');
-	    } else {
-    		header('Location: account.php');
-	    }
-	    exit;
-        } else {
+                if ($user['idrole'] == 1) {
+                    header('Location: admin.php');
+                } else {
+                    header('Location: account.php');
+                }
+                exit;
+            }
             $error = 'Mot de passe incorrect.';
+        } else {
+            $error = 'Adresse e-mail introuvable.';
         }
-    } else {
-        $error = 'Adresse e-mail introuvable.';
+    } catch (PDOException $e) {
+        $error = 'Erreur de connexion.';
     }
 }
 ?>
@@ -58,16 +57,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <form method="POST">
             <label for="email">Adresse e-mail :</label>
             <input type="email" name="email" id="email" required>
-        <label for="password">Mot de passe :</label>
-	<div class="password-container">
-    		<input type="password" name="password" id="password" required>
-    		<span class="toggle-password" onclick="togglePasswordVisibility()">👀</span>     
-	</div>
-
-	<p class="mdp-oublie"><a href="motdepasse-oublie.php">Mot de passe oublié ?</a></p>
-
-	<button type="submit">Se connecter</button>
-
+            <label for="password">Mot de passe :</label>
+            <div class="password-container">
+                <input type="password" name="password" id="password" required>
+                <span class="toggle-password" onclick="togglePasswordVisibility()">👀</span>
+            </div>
+            <p class="mdp-oublie"><a href="motdepasse-oublie.php">Mot de passe oublié ?</a></p>
+            <button type="submit">Se connecter</button>
         </form>
         <p>Pas encore de compte ? <a href="register.php">Créer un compte</a></p>
     </div>

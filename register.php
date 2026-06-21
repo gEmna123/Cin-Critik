@@ -1,19 +1,16 @@
 <?php
-// filepath: /home/etu/test99999/register.php
-
-include 'postgre.php';
+require_once __DIR__ . '/database.php';
 
 $error = '';
 $success = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $prenom = $_POST['prenom'];
-    $nom = $_POST['nom'];
-    $email = $_POST['email'];
-    $password = $_POST['password'];
+    $prenom = trim($_POST['prenom'] ?? '');
+    $nom = trim($_POST['nom'] ?? '');
+    $email = trim($_POST['email'] ?? '');
+    $password = $_POST['password'] ?? '';
     $rgpd = isset($_POST['rgpd']);
 
-    // Validation des données
     if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
         $error = 'Vous devez rentrer une adresse mail valide.';
     } elseif (!preg_match('/^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{6,}$/', $password)) {
@@ -21,15 +18,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } elseif (!$rgpd) {
         $error = 'Vous devez accepter les conditions générales.';
     } else {
-        // Insertion dans la base de données
         $hashed_password = password_hash($password, PASSWORD_BCRYPT);
-        $query = "INSERT INTO utilisateur (nomutilisateur, prenomutilisateur, emailutilisateur, mdputilisateur, idrole, dateinscription) 
-                  VALUES ($1, $2, $3, $4, 2, CURRENT_DATE)";
-        $result = pg_query_params($conn, $query, [$nom, $prenom, $email, $hashed_password]);
+        $query = "INSERT INTO utilisateur (nomutilisateur, prenomutilisateur, emailutilisateur, mdputilisateur, idrole, dateinscription) VALUES (:nom, :prenom, :email, :mdp, 2, CURRENT_DATE)";
 
-        if ($result) {
+        try {
+            $stmt = $pdo->prepare($query);
+            $stmt->execute([
+                ':nom' => $nom,
+                ':prenom' => $prenom,
+                ':email' => $email,
+                ':mdp' => $hashed_password,
+            ]);
             $success = 'Compte créé avec succès. Vous pouvez maintenant vous connecter.';
-        } else {
+        } catch (PDOException $e) {
             $error = 'Erreur lors de la création du compte.';
         }
     }
@@ -70,7 +71,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <input type="checkbox" name="rgpd" required>
                 J'accepte les <a href="conditions.php" target="_blank">conditions générales</a>
             </label>
-
 
             <button type="submit">Créer un compte</button>
         </form>
